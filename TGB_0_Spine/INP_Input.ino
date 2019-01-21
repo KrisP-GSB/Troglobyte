@@ -6,5 +6,5 @@
     tmrPInt     = 12*60;  
     tmrXInt     = 1;  
 
-    setBlink    = 1;
+    setBlink    = 1;    // 0: never blink, 1: blink only when connected, 2: always blink
   }
