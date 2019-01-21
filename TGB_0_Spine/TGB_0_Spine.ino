@@ -35,6 +35,7 @@
       int tmrRHInt    ;    
       int tmrPInt     ;  
       int tmrXInt     ;
+      byte setBlink   ;
 
 void setup() {
   //  Initialise
