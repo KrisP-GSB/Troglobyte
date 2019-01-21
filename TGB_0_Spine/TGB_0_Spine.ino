@@ -1,4 +1,7 @@
 //..|....|....|....|....|....|....|....|....|....|....|....|....|....|....|....|
+//  Initialise
+  //  Pin assignments
+      const int ledPin00 = LED_BUILTIN;                         // LED_BUILTIN points to the internal led, D13 on the Nano (see https://www.arduino.cc/en/Tutorial/Blink)
   //  Variables
   //. Identification and information
       const String tgbWhoAmI = "NiphDomo.000.000.T_RH_P._.";    // Type.Version.Serial.SensorInternal.SensorsExternal    // Consider using PROGMEM: https://www.arduino.cc/reference/en/language/variables/utilities/progmem/
@@ -36,8 +39,11 @@
       byte setBlink = 1;    // 0: never blink, 1: blink only when connected, 2: always blink
 
 void setup() {
-  // put your setup code here, to run once:
-  // ...
+  //  Initialise
+  //. Hardware
+      pinMode(ledPin00, OUTPUT);        
+  //  Confirm proper initialisation      
+      BlinkInitiateSuccess();           // Pauze, three blinks, and a pauze to put Christian at ease (bootloader or arduino will have blinked before this)
   //  Input
   //. Reading variables
       inpRead();
@@ -52,9 +58,8 @@ void setup() {
       tmrMillis0 = millis();                          // Reset the time
 }
 
-void loop() {
-  // put your main code here, to run repeatedly:
 //..|....|....|....|....|....|....|....|....|....|....|....|....|....|....|....|
+void loop() { 
   //  Receiving commands  
       tgbUSB = comUSBconnected(tgbUSB); //......................................Works as far as tested (i.e. it always detects the USB serial connection)
       tgbWAN = comWANconnected(); //............................................Dummy (always false)

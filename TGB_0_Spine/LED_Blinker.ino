@@ -1,3 +1,4 @@
+//  LED communication
 //. Connections
 //..Connection established
   void BlinkConnected() {
@@ -9,6 +10,16 @@
     BlinkFadeOut();
   }
   
+//. Initialisation
+    void BlinkInitiateSuccess(){
+      digitalWrite(ledPin00, LOW);
+      delay(1000);
+      for (int i=0; i<=5; i++){
+        digitalWrite(ledPin00, !digitalRead(ledPin00));         // Most efficient code, avoiding a boolean
+        delay(500);   
+      }
+      delay(1500);                                              // Adding 1.5s to have 1s pauze before starting real code
+    }
 //. Fade out and in (the 'I'm present and alive' blink)
   void BlinkImHere(){
     BlinkFadeIn();
