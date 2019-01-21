@@ -2,7 +2,7 @@
 //  Commander
 //. Get command
     char cmdGet(){
-      if (Serial.available() > 0) {
+      if (Serial.available() > 0) {       // Crucial command: Serial may indicate True, when still receiving a byte. 
         return char(Serial.read());       // Code from https://www.instructables.com/id/HOW-TO-use-the-ARDUINO-SERIAL-MONITOR/ 
       }                                   // and file:///C:/Program%20Files%20(x86)/Arduino/reference/www.arduino.cc/en/Serial/Available.html
       else {
