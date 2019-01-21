@@ -18,7 +18,7 @@
         digitalWrite(ledPin00, !digitalRead(ledPin00));         // Most efficient code, avoiding a boolean
         delay(500);   
       }
-      delay(1500);                                              // Adding 1.5s to have 1s pauze before starting real code
+      delay(1500);                                              // Adding 1.5 s to have 2 s pauze before starting real code
     }
 //. Fade out and in (the 'I'm present and alive' blink)
   void BlinkImHere(){

@@ -35,8 +35,6 @@
       int tmrRHInt    ;    
       int tmrPInt     ;  
       int tmrXInt     ;
-  //. Settings
-      byte setBlink = 1;    // 0: never blink, 1: blink only when connected, 2: always blink
 
 void setup() {
   //  Initialise
