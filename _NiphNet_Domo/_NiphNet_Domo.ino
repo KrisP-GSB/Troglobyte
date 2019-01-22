@@ -37,18 +37,22 @@
       int tmrXInt     ;
       byte setBlink   ;
 
+//..|....|....|....|....|....|....|....|....|....|....|....|....|....|....|....|
 void setup() {
   //  Initialise
   //. Hardware
       pinMode(ledPin00, OUTPUT);        
-  //  Confirm proper initialisation      
-      BlinkInitiateSuccess();           // Pauze, three blinks, and a pauze to put Christian at ease (bootloader or arduino will have blinked before this)
+  //. Communication
+      Serial.begin(9600);                                                       // Default for most Arduinos
   //  Input
   //. Reading variables
       inpRead();
   //. Input dependent parameters
       tmrBaseIntMS = tmrBaseInt * tmrSleepInterval; // Take action every x milliseconds
-  //  Last thing to do
+  //  Last things to do
+  //. Confirm proper initialisation      
+      BlinkInitiateSuccess();           // Pauze, three blinks, and a pauze to put Christian at ease (bootloader or arduino will have blinked before this)
+  //. Reset parameters to start cycle with measurement
       if (tmrBlinkInt > 0)  {tmrBlinkAction = 1;}     // First action: measure everything 
       if (tmrTInt     > 0)  {tmrTAction     = 1;}       
       if (tmrRHInt    > 0)  {tmrRHAction    = 1;}      
@@ -64,23 +68,32 @@ void loop() {
       tgbWAN = comWANconnected(); //............................................Dummy (always false)
       if (tgbUSB || tgbWAN) {
         switch(cmdGet()) {                    // Reacting to commands
+          case ' ': 
+            break;                              // Nothing received, proceed
           case '?': 
             cmdImHere();
+            break;                            // For reasons not clear not me, code will fail when this break is not in place. It is in any case more efficient to have it. 
           case 'R':                           // Open command prompt to receive commands (pauzes all activities)
             cmdRun();                         
+            break; 
           case 'P':                           // Suspend all actions untill P is pressed again
             cmdPauze();
+            break; 
           case 'S':
             // cmdStopMeasuring();            // Be careful with this, needs certainty to be turned on again
+            break; 
           case 'T': 
             // LiveMeasureT()
+            break; 
           case 'M': 
             // LiveMeasureAll()
+            break; 
           case '>':                           // Dump all data to serial
             // cmdPlay();
+            break; 
           default:
-            // No command or command not recognised 
-          break;
+            Serial.println("Unknown command");  // No command or command not recognised 
+            break;
         }
       } else {
         // IF !(tgbCmd = 0x00) THEN CheckDelayCmd() END IF
