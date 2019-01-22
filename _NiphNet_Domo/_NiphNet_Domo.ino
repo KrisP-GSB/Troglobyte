@@ -67,9 +67,9 @@ void loop() {
       tgbUSB = comUSBconnected(tgbUSB); //......................................Works as far as tested (i.e. it always detects the USB serial connection)
       tgbWAN = comWANconnected(); //............................................Dummy (always false)
       if (tgbUSB || tgbWAN) {
-        switch(cmdGet()) {                    // Reacting to commands
-          case ' ': 
-            break;                              // Nothing received, proceed
+        switch(cmdGet()) {                                                      // Reacting to commands. Note that even if cmdGet is an int, it is automatically converted to a char if compared to single quotes ('').
+          case 0: 
+            break;                            // Nothing received, proceed
           case '?': 
             cmdImHere();
             break;                            // For reasons not clear not me, code will fail when this break is not in place. It is in any case more efficient to have it. 
@@ -117,7 +117,7 @@ void loop() {
         msrX();
         tmrXAction = 0;
       }
-      if (tmrBlinkAction == 1) {              // Placze last: a blink not followed by a pauze
+      if (tmrBlinkAction == 1) {              // Place last: a blink not followed by a pauze
         msrBlink();
         tmrBlinkAction = 0;
       }
