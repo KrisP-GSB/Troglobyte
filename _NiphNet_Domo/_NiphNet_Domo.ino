@@ -4,11 +4,11 @@
       const int ledPin00 = LED_BUILTIN;                         // LED_BUILTIN points to the internal led, D13 on the Nano (see https://www.arduino.cc/en/Tutorial/Blink)
   //  Variables
   //. Identification and information
-      const String tgbWhoAmI = "NiphDomo.000.000.T_RH_P._.";    // Type.Version.Serial.SensorInternal.SensorsExternal    // Consider using PROGMEM: https://www.arduino.cc/reference/en/language/variables/utilities/progmem/
-      const String tgbStartTGB = "dd-mmm-yyyy hh:mm UCT";       //Dummy: ask the clock
+      const String tgbWhoAmI = "NiphDomo.000.000.T_RH_P._.";    // Type.Version.Serial.SensorInternal.SensorsExternal    // Consider using EEPROM or PROGMEM: https://www.arduino.cc/reference/en/language/variables/utilities/progmem/
+      const String tgbStartTGB = "dd-mmm-yyyy hh:mm UCT";       // Dummy: ask the clock
   //. Setting up timer
-      const int tmrSleepInterval = 1000;   // Equal to the sleep duration (1s or 1000ms for most clocks)
-      unsigned int tgbTmr = 0;          
+      const int tmrSleepInterval = 1000;                        // Equal to the sleep duration (1 s or 1000 ms for most clocks)
+      unsigned int tgbTmr = 0;                                  // 
       unsigned long tmrMillis0;
   //. Connection
       boolean tgbUSB = false;
@@ -67,7 +67,7 @@ void loop() {
       tgbUSB = comUSBconnected(tgbUSB); //......................................Works as far as tested (i.e. it always detects the USB serial connection)
       tgbWAN = comWANconnected(); //............................................Dummy (always false)
       if (tgbUSB || tgbWAN) {
-        switch(cmdGet()) {                                                      // Reacting to commands. Note that even if cmdGet is an int, it is automatically converted to a char if compared to single quotes ('').
+        switch(comGet()) {                                                      // Reacting to commands. Note that even if cmdGet is an int, it is automatically converted to a char if compared to single quotes ('').
           case 0: 
             break;                            // Nothing received, proceed
           case '?': 

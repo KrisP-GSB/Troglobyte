@@ -12,7 +12,7 @@
 //..Pauze
   void cmdPauze(){
     if (setBlink>1) {BlinkPauzeStart();}  // Lights on
-    while (cmdGet() != 'P') {             // Trap in this loop until P is pressed again
+    while (comGet() != 'P') {             // Trap in this loop until P is pressed again
       delay(50);                          
     }
     BlinkPauzeEnd();                      // Lights off
