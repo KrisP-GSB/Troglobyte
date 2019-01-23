@@ -67,14 +67,14 @@ void loop() {
       tgbUSB = comUSBconnected(tgbUSB);                                         // Works as far as tested (i.e. it always detects the USB serial connection)
       tgbWAN = comWANconnected();                                               // DUMMY (always false)
       if (tgbUSB || tgbWAN) {
-        switch(comGet()) {                                                      // Reacting to commands. Note that even if cmdGet is an int, it is automatically converted to a char if compared to single quotes ('').
+        switch(comGet()) {                                                      // Reacting to commands. Note that even cmdGet is an int, and so is a character between single quotes ('')! (Only double quotes indicate a char/string.)
           tgbDo = true;                                                         // Did the command result in a delay? True for most commands
           case 0: 
             tgbDo = false;                                                      // No delay (maybe the only exception, but it happens a lot)
             break;                                                              // Nothing received, proceed
           case '?': 
             cmdImHere();
-            break;                                                              // For reasons not clear not me, code will fail when this break is not in place (moves to 'P'?). It is in any case more efficient to have it. 
+            break;                                                              
           case 'R':                                                             // Open command prompt to receive commands (pauzes all activities)
             cmdRun();                         
             break; 
