@@ -1,3 +1,4 @@
+//..|....|....|....|....|....|....|....|....|....|....|....|....|....|....|....|
 //  LED communication
 //. Connections
 //..Connection established
