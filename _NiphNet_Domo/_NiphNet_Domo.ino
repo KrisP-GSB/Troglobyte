@@ -62,8 +62,8 @@ void setup() {
 //..|....|....|....|....|....|....|....|....|....|....|....|....|....|....|....|
 void loop() { 
   //  Receiving commands  
-      tgbUSB = comUSBconnected(tgbUSB); //......................................Works as far as tested (i.e. it always detects the USB serial connection)
-      tgbWAN = comWANconnected(); //............................................Dummy (always false)
+      tgbUSB = comUSBconnected(tgbUSB);                                         // Works as far as tested (i.e. it always detects the USB serial connection)
+      tgbWAN = comWANconnected();                                               // DUMMY (always false)
       if (tgbUSB || tgbWAN) {
         switch(comGet()) {                                                      // Reacting to commands. Note that even if cmdGet is an int, it is automatically converted to a char if compared to single quotes ('').
           case 0: 
@@ -71,14 +71,14 @@ void loop() {
           case '?': 
             cmdImHere();
             break;                                                              // For reasons not clear not me, code will fail when this break is not in place (moves to 'P'?). It is in any case more efficient to have it. 
-          case 'R':                           // Open command prompt to receive commands (pauzes all activities)
+          case 'R':                                                             // Open command prompt to receive commands (pauzes all activities)
             cmdRun();                         
             break; 
-          case 'P':                           // Suspend all actions untill P is pressed again
+          case 'P':                                                             // Suspend all actions untill P is pressed again
             cmdPauze();
             break; 
           case 'S':
-            // cmdStopMeasuring();            // Be careful with this, needs certainty to be turned on again
+            // cmdStopMeasuring();                                              // Be careful with this, needs certainty to be turned on again
             break; 
           case 'T': 
             // LiveMeasureT()
@@ -86,17 +86,15 @@ void loop() {
           case 'M': 
             // LiveMeasureAll()
             break; 
-          case '>':                           // Dump all data to serial
+          case '>':                                                             // Dump all data to serial
             // cmdPlay();
             break; 
           default:
-            Serial.println("Unknown command");  // No command or command not recognised 
+            Serial.println("Unknown command");                                  // No command or command not recognised 
             break;
         }
-      } else {
-        // IF !(tgbCmd = 0x00) THEN CheckDelayCmd() END IF
+        tmrCheckTime();                                                         // Correct timer (only necessary when there were command actions --> need an additional parameter).
       }
-      tmrCheckTime();
 
   //  Executing measurements
       if (tmrTAction == 1) {
