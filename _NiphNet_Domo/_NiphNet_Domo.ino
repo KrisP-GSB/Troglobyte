@@ -25,6 +25,8 @@
       byte tmrPAction     = 0;   
       byte tmrXCnt        = 0;
       byte tmrXAction     = 0;    
+  //. TGB-wide reusable parameters
+      boolean tgbDo  = false;                                                   // Do or Don't parameter (see e.g. command switch)
   //. Input
   //..Initialising parameters
       int tmrBaseInt  ;                                                         // Take action every y counts
@@ -66,33 +68,37 @@ void loop() {
       tgbWAN = comWANconnected();                                               // DUMMY (always false)
       if (tgbUSB || tgbWAN) {
         switch(comGet()) {                                                      // Reacting to commands. Note that even if cmdGet is an int, it is automatically converted to a char if compared to single quotes ('').
+          tgbDo = true;                                                         // Did the command result in a delay? True for most commands
           case 0: 
+            tgbDo = false;                                                      // No delay (maybe the only exception, but it happens a lot)
             break;                                                              // Nothing received, proceed
           case '?': 
             cmdImHere();
-            tmrCheckTime();                                                         // Correct timer (only necessary when there were command actions --> need an additional parameter).
             break;                                                              // For reasons not clear not me, code will fail when this break is not in place (moves to 'P'?). It is in any case more efficient to have it. 
           case 'R':                                                             // Open command prompt to receive commands (pauzes all activities)
             cmdRun();                         
-            tmrCheckTime(); break; 
+            break; 
           case 'P':                                                             // Suspend all actions untill P is pressed again
             cmdPauze();
-            tmrCheckTime(); break; 
+            break; 
           case 'S':
             // cmdStopMeasuring();                                              // Be careful with this, needs certainty to be turned on again
-            tmrCheckTime(); break; 
+            break; 
           case 'T': 
             // LiveMeasureT()
-            tmrCheckTime(); break; 
+            break; 
           case 'M': 
             // LiveMeasureAll()
-            tmrCheckTime(); break; 
+            break; 
           case '>':                                                             // Dump all data to serial
             // cmdPlay();
-            tmrCheckTime(); break; 
+            break; 
           default:
             Serial.println("Unknown command");                                  // No command or command not recognised 
-            tmrCheckTime(); break;
+            break;
+        }
+        if (tgbDo) {
+          tmrCheckTime();                                                       // Correct timer (only necessary when there were delays, command actions).
         }
       }
 
