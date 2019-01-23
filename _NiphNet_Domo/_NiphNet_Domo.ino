@@ -70,30 +70,30 @@ void loop() {
             break;                                                              // Nothing received, proceed
           case '?': 
             cmdImHere();
+            tmrCheckTime();                                                         // Correct timer (only necessary when there were command actions --> need an additional parameter).
             break;                                                              // For reasons not clear not me, code will fail when this break is not in place (moves to 'P'?). It is in any case more efficient to have it. 
           case 'R':                                                             // Open command prompt to receive commands (pauzes all activities)
             cmdRun();                         
-            break; 
+            tmrCheckTime(); break; 
           case 'P':                                                             // Suspend all actions untill P is pressed again
             cmdPauze();
-            break; 
+            tmrCheckTime(); break; 
           case 'S':
             // cmdStopMeasuring();                                              // Be careful with this, needs certainty to be turned on again
-            break; 
+            tmrCheckTime(); break; 
           case 'T': 
             // LiveMeasureT()
-            break; 
+            tmrCheckTime(); break; 
           case 'M': 
             // LiveMeasureAll()
-            break; 
+            tmrCheckTime(); break; 
           case '>':                                                             // Dump all data to serial
             // cmdPlay();
-            break; 
+            tmrCheckTime(); break; 
           default:
             Serial.println("Unknown command");                                  // No command or command not recognised 
-            break;
+            tmrCheckTime(); break;
         }
-        tmrCheckTime();                                                         // Correct timer (only necessary when there were command actions --> need an additional parameter).
       }
 
   //  Executing measurements
