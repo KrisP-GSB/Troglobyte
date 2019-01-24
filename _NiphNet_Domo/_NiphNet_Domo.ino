@@ -16,11 +16,12 @@
   //. Counter
       long tmrBaseIntMS;
 
+      // Good tutorial on using bits: https://playground.arduino.cc/Code/BitMath#bit_pack
       // 8, including the led (blink). Also including the base counter to save memory? --> better to move to int (16 bits)? --> warning, on some arduinos an int is 32 bits!
-      byte tmrAction = B0000000;       // 8 slots to indicate no action (0) or action (1), using bitSet() I think
+      byte tmrAction = 0; // B0000000 * 256 + B00000000; probably you can write 0b0000000000000000, but I'm not sure      // 16 slots to indicate no action (0) or action (1). To be tested: can bitSet() and bit() reach all 16? Note that this settin is explicit (a 0 would do). 
       int tmrCount[7];          // Array of 8 
       int tmrInterval[7];       // Array of 8
-      enum 0 to 7               // C++ command, for explicitly naming the sensors
+      enum tgbSensor{tgbLed, tgbT01, tgbRH01, tgbP01, tgbX04, tgbX05, tgbX06, tgbX07, tgbX08, tgbX09, tgbX10, tgbX11, tgbX12, tgbX13, tgbX14, tgbX15};               // C++ command, for explicitly naming the sensors
       
       
       byte tmrBaseCnt     = 0;  // Base counter in seconds 
