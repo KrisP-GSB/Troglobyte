@@ -15,6 +15,14 @@
       boolean tgbWAN = false;
   //. Counter
       long tmrBaseIntMS;
+
+      // 8, including the led (blink). Also including the base counter to save memory? --> better to move to int (16 bits)? --> warning, on some arduinos an int is 32 bits!
+      byte tmrAction = B0000000;       // 8 slots to indicate no action (0) or action (1), using bitSet() I think
+      int tmrCount[7];          // Array of 8 
+      int tmrInterval[7];       // Array of 8
+      enum 0 to 7               // C++ command, for explicitly naming the sensors
+      
+      
       byte tmrBaseCnt     = 0;  // Base counter in seconds 
       byte tmrBlinkCnt    = 0;  // Counter in times base counts 
       byte tmrBlinkAction = 0;  // Flag indicating to take action
