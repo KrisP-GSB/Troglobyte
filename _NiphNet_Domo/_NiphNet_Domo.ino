@@ -17,8 +17,13 @@
       long tmrBaseIntMS;
 
       // Good tutorial on using bits: https://playground.arduino.cc/Code/BitMath#bit_pack
-      // 8, including the led (blink). Also including the base counter to save memory? --> better to move to int (16 bits)? --> warning, on some arduinos an int is 32 bits!
-      
+
+      struct {
+        int action = 0;
+        int count[15];
+      } tmr;
+
+
       int tmrAction = 0; // B0000000 * 256 + B00000000; probably you can write 0b0000000000000000, but I'm not sure      // 16 slots to indicate no action (0) or action (1). To be tested: can bitSet() and bit() reach all 16? Note that this settin is explicit (a 0 would do). 
       int tmrCount[15];          // Array of 8 
       int tmrInterval[15];       // Array of 8
