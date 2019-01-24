@@ -4,12 +4,7 @@
       const int ledPin00 = LED_BUILTIN;                         // LED_BUILTIN points to the internal led, D13 on the Nano (see https://www.arduino.cc/en/Tutorial/Blink)
   //  Variables
   //. Identification and information
-      const String tgbWhoAmI = "NiphDomo.000.000.T_RH_P._.";    // Type.Version.Serial.SensorInternal.SensorsExternal    // Consider using PROGMEM: https://www.arduino.cc/reference/en/language/variables/utilities/progmem/
-      const String tgbStartTGB = "dd-mmm-yyyy hh:mm UCT";       //Dummy: ask the clock
   //. Setting up timer
-      const int tmrSleepInterval = 1000;   // Equal to the sleep duration (1s or 1000ms for most clocks)
-      unsigned int tgbTmr = 0;          
-      unsigned long tmrMillis0;
   //. Connection
       boolean tgbUSB = false;
       boolean tgbWAN = false;
@@ -19,41 +14,28 @@
       // Good tutorial on using bits: https://playground.arduino.cc/Code/BitMath#bit_pack
 
       struct {
-        int action = 0;
-        int count[15];
+        int action = 0;                                                         // 0b0000000000000000 (so 16 flags).
+        int actionOnCount[15];                                                  // User defined: 0: sensor not used, value: number of counts.
+        int count[16] = {0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0};                      // count[0] -> base counter, others multiples of base counter. Range base counter: 1 s to ~18 days.
+        const int Sleep_ms = 1000;                                              // Equal to the sleep duration (1s or 1000ms for most clocks)
+        unsigned int timer = 0;          
+        unsigned long timer0;
       } tmr;
 
-
-      int tmrAction = 0; // B0000000 * 256 + B00000000; probably you can write 0b0000000000000000, but I'm not sure      // 16 slots to indicate no action (0) or action (1). To be tested: can bitSet() and bit() reach all 16? Note that this settin is explicit (a 0 would do). 
-      int tmrCount[15];          // Array of 8 
-      int tmrInterval[15];       // Array of 8
-      enum tgbSensor{ tgb00_Base,tgb01_Led, tgb02_T,  tgb03_RH, 
+      enum typSensor{ tgb00_Base,tgb01_Led, tgb02_T,  tgb03_RH, 
                       tgb04_P,   tgb05_X,   tgb06_X,  tgb07_X, 
                       tgb08_X,   tgb09_X,   tgb10_X,  tgb11_X, 
-                      tgb12_X,   tgb13_X,   tgb14_X,  tgb15_X};               // C++ command, for explicitly naming the sensors
+                      tgb12_X,   tgb13_X,   tgb14_X,  tgb15_X   };               // C++ command, for explicitly naming the sensors
+      struct {
+        typSensor sensor;      
+        const String tgbWhoAmI = "NiphDomo.000.000.T_RH_P._.";    // Type.Version.Serial.SensorInternal.SensorsExternal    // Consider using PROGMEM: https://www.arduino.cc/reference/en/language/variables/utilities/progmem/
+        String tgbStartTGB = "dd-mmm-yyyy hh:mm UCT";       //Dummy: ask the clock
+      } tgb;
       
-      
-      byte tmrBaseCnt     = 0;  // Base counter in seconds 
-      byte tmrBlinkCnt    = 0;  // Counter in times base counts 
-      byte tmrBlinkAction = 0;  // Flag indicating to take action
-      byte tmrTCnt        = 0;          
-      byte tmrTAction     = 0;       
-      byte tmrRHCnt       = 0;         
-      byte tmrRHAction    = 0;      
-      byte tmrPCnt        = 0;          
-      byte tmrPAction     = 0;   
-      byte tmrXCnt        = 0;
-      byte tmrXAction     = 0;    
   //. Input
   //..Initialising parameters
     // I think the below should become a class (is being reused)
-      int tmrBaseInt  ;    // Take action every y counts
-      int tmrBlinkInt ;    // Take action every z base counts (i.e. multiples of base counts), 
-      int tmrTInt     ;    // use 0 to disable
-      int tmrRHInt    ;    
-      int tmrPInt     ;  
-      int tmrXInt     ;
-      byte setBlink   ;
+      byte setBlink   ;     // Blink the leds or not
 
 //..|....|....|....|....|....|....|....|....|....|....|....|....|....|....|....|
 void setup() {
