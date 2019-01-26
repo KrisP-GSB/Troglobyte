@@ -25,7 +25,7 @@
       struct {
         int           action = 0;                                               // tmr.action - 0b0000000000000000 (so 16 flags). Base (position 0) is not used. Good tutorial on using bits: https://playground.arduino.cc/Code/BitMath#bit_pack
         int           countMax[sensLed + 1];                                    //  ` .countMax[] - User defined: 0: sensor not used, value: number of counts to take action.
-        int           counts[sensLed + 1] = {};                                 //    .count[] - count[0] -> base counter, others multiples of base counter. Range base counter: 1 s to ~18 days.
+        int           counts[sensLed + 1] = {};                                 //    .count[] - count[0] -> base counter, others multiples of base counter. Range base counter: 1 s to ~18 days. {} initiates all values to 0, see: https://stackoverflow.com/questions/201101/how-to-initialize-all-members-of-an-array-to-the-same-value.
         const int     sleep_ms = 1000;                                          //    .sleep_ms - Equal to the sleep duration (1 s or 1000 ms for most clocks)
         unsigned long timer0_ms;                                                //    .timer0_ms - timer starting point (in ms)
         long          timerBaseMax_ms;                                          //    .timerBaseMax_ms - timer limit (in ms) for base counters (only base needs a timer, others can use counters)
@@ -60,14 +60,16 @@ void setup() {
       inpRead();                                                                // DUMMY: these variables will be provided externally, or have been stored in case of reboot
   //. Input dependent parameters
       tmr.timerBaseMax_ms = tmr.countMax[sensBase] * tmr.sleep_ms;              // Take action every x milliseconds (base counter time step)
+  //. Set Action to true
+      for (int s = sensLed; s > sensBase;  s--) {                                    // Flagging all sensors for action before entering loop
+        tmr.action |= (tmr.countMax[s] > 0) << s;
+//        tmr.action |= tmr.countMax[s];                                           // Wiki is needed to document what this loop does
+//        tmr.action <<= 1;
+      }
+Serial.print (tmr.action, BIN);
   //  Last things to do
   //. Confirm proper initialisation      
       BlinkInitiateSuccess();                                                   // Three distincitve blinks to mark start (other native, always shorter blinks will have occured before)
-  //. Start cycle with measurement
-      for (int s = 16; s > sensBase;  s--) {                                    // Flagging all sensors for action before entering loop
-        tmr.action & tmr.countMax[s];                                           // Wiki is needed to document what this loop does
-        tmr.action <<= 1;
-      }
       tmr.timer0_ms = millis();                                                 // Reset the timer
 }
 
