@@ -11,14 +11,14 @@
   }
 //..Pauze
   void cmdPauze(){
-    if (set.blinkLeds>1) {BlinkPauzeStart();}  // Lights on
-    while (comGet() != 'P') {             // Trap in this loop until P is pressed again
+    if (set.blinkLeds>1) {BlinkPauzeStart();}                                   // Lights on
+    while (comGet() != 'P') {                                                   // Trap in this loop until P is pressed again
       delay(50);                          
     }
-    BlinkPauzeEnd();                      // Lights off
+    BlinkPauzeEnd();                                                            // Lights off
   }
 //..Run (command prompt)
-  void cmdRun(){                    // Dummy code
-    //...     // Possible starting point: https://www.arduino.cc/en/Tutorial/ShellCommands
+  void cmdRun(){                                                                // Dummy code
+    //...                                                                       // Possible starting point: https://www.arduino.cc/en/Tutorial/ShellCommands
   }
   

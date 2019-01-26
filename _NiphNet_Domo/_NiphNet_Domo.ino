@@ -3,7 +3,7 @@
   //  Pin assignments
       struct {
         const int led00 = LED_BUILTIN;                                          // pin.led00 - LED_BUILTIN points to the internal led, D13 on the Nano (see https://www.arduino.cc/en/Tutorial/Blink)
-        const int led01 = 0;                                                    //    .led01 - Open slots for three external leds
+        const int led01 = 0;                                                    //    .led01 - Open slots for three external leds (not compiled if not used)
         const int led02 = 0;                                                    //    .led02
         const int led03 = 0;                                                    //    .led03
       } pin;
@@ -24,10 +24,9 @@
   //  Timers and related counters
       struct {
         int           action = 0;                                               // tmr.action - 0b0000000000000000 (so 16 flags). Base (position 0) is not used. Good tutorial on using bits: https://playground.arduino.cc/Code/BitMath#bit_pack
-        int           countMax[16];                                             //  ` .countMax[] - User defined: 0: sensor not used, value: number of counts to take action.
-        int           counts[16] = {0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0};           //    .count[] - count[0] -> base counter, others multiples of base counter. Range base counter: 1 s to ~18 days.
+        int           countMax[sensLed + 1];                                    //  ` .countMax[] - User defined: 0: sensor not used, value: number of counts to take action.
+        int           counts[sensLed + 1] = {};                                 //    .count[] - count[0] -> base counter, others multiples of base counter. Range base counter: 1 s to ~18 days.
         const int     sleep_ms = 1000;                                          //    .sleep_ms - Equal to the sleep duration (1 s or 1000 ms for most clocks)
-//        unsigned int  timer_ms = 0;                                             //    .timer_ms - 
         unsigned long timer0_ms;                                                //    .timer0_ms - timer starting point (in ms)
         long          timerBaseMax_ms;                                          //    .timerBaseMax_ms - timer limit (in ms) for base counters (only base needs a timer, others can use counters)
       } tmr;
@@ -54,7 +53,7 @@
 void setup() {
   //  Initialise
   //. Hardware
-      pinMode(pin.led00, OUTPUT);                                                // Pins are input buy default
+      pinMode(pin.led00, OUTPUT);                                               // Pins are input buy default
   //. Communication
       Serial.begin(9600);                                                       // Default for most Arduinos
   //  Input
@@ -70,26 +69,19 @@ void setup() {
         tmr.action & tmr.countMax[s];
         tmr.action <<= 1;
       }
-/*
-      if (tmr.countMax[sensLed] > 0)  {tmr.action = 0b10;}            // First action: measure everything 
-      if (tmrTInt     > 0)  {tmrTAction     = 1;}                               // Therefore all ...Actions to 1
-      if (tmrRHInt    > 0)  {tmrRHAction    = 1;}      
-      if (tmrPInt     > 0)  {tmrPAction     = 1;}             
-      if (tmrXInt     > 0)  {tmrXAction     = 1;}
-*/
-      tmr.timer0_ms = millis();                                                    // Reset the timer
+      tmr.timer0_ms = millis();                                                 // Reset the timer
 }
 
 //..|....|....|....|....|....|....|....|....|....|....|....|....|....|....|....|
 void loop() { 
   //  Receiving commands  
-      com.USB = comUSBconnected(com.USB);                                         // Works as far as tested (i.e. it always detects the USB serial connection)
-      com.WAN = comWANconnected();                                               // DUMMY (always false)
+      com.USB = comUSBconnected(com.USB);                                       // Works as far as tested (i.e. it always detects the USB serial connection)
+      com.WAN = comWANconnected();                                              // DUMMY (always false)
       if (com.USB || com.WAN) {
         switch(comGet()) {                                                      // Reacting to commands. Note that even cmdGet is an int, and so is a character between single quotes ('')! (Only double quotes indicate a char/string.)
-          tgb.go = true;                                                         // Did the command result in a delay? True for most commands
+          tgb.go = true;                                                        // Did the command result in a delay? True for most commands
           case 0: 
-            tgb.go = false;                                                      // No delay (maybe the only exception, but it happens a lot)
+            tgb.go = false;                                                     // No delay (maybe the only exception, but it happens a lot)
             break;                                                              // Nothing received, proceed
           case '?': 
             cmdImHere();
@@ -125,13 +117,13 @@ void loop() {
       if (tmrAction(sens01_T)) {msrT();}
       if (tmrAction(sens02_RH)) {msrRH();}
       if (tmrAction(sens03_P)) {msrP();}
-      //... Room for other sensors (up to sens14_X)
+      //...                                                                     // Room for other sensors (up to sens14_X)
       if (tmrAction(sensLed)) {msrBlink();}                                     // Place last: a blink not followed by a pauze
 
   //  Sleep or short delay (depending on whether connected)
   if  (com.USB || com.WAN) {
-    tmpSleep();           // Sleep until next second has passed, and increase counters.
+    tmpSleep();                                                                 // Sleep until next second has passed, and increase counters.
   } else {
-    delay(100);           // Delay of 100 ms is acceptable for most input.
+    delay(100);                                                                 // Delay of 100 ms is acceptable for most input.
   }
 }

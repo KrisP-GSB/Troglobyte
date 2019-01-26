@@ -22,9 +22,3 @@
     if (set.blinkLeds>1) {BlinkP();}
     // ...
   }
-
-//. Measure X (placeholder for additional sensor)
-  void msrX() {
-    if (set.blinkLeds>1) {BlinkX();}
-    // ...
-  }
