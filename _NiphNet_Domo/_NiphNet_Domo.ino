@@ -41,6 +41,7 @@
   //  Operational settings
       struct {
         byte blinkLeds;                                                         // Turn leds on or off
+        bool debug = false;
       } set; 
   
   //  Generic variables                                                         // TGB-wide reusable parameters
@@ -61,12 +62,10 @@ void setup() {
   //. Input dependent parameters
       tmr.timerBaseMax_ms = tmr.countMax[sensBase] * tmr.sleep_ms;              // Take action every x milliseconds (base counter time step)
   //. Set Action to true
-      for (int s = sensLed; s > sensBase;  s--) {                                    // Flagging all sensors for action before entering loop
-        tmr.action |= (tmr.countMax[s] > 0) << s;
-//        tmr.action |= tmr.countMax[s];                                           // Wiki is needed to document what this loop does
-//        tmr.action <<= 1;
+      for (int s = sensLed; s > sensBase;  s--) {                               // Flagging all sensors for action before entering loop
+        tmr.action |= (tmr.countMax[s] > 0) << s;                               // Explanation, see: https://github.com/KrisP-GSB/Troglobyte/wiki/Initiate-sensor-actions
       }
-Serial.print (tmr.action, BIN);
+      if (set.debug) {Serial.print (tmr.action, BIN);}                          // Debug and code testing (results in Serial monitor)
   //  Last things to do
   //. Confirm proper initialisation      
       BlinkInitiateSuccess();                                                   // Three distincitve blinks to mark start (other native, always shorter blinks will have occured before)
@@ -76,6 +75,7 @@ Serial.print (tmr.action, BIN);
 //..|....|....|....|....|....|....|....|....|....|....|....|....|....|....|....|
 void loop() { 
   //  Receiving commands  
+if (set.debug) {Serial.print (tmr.action, BIN);}                          // Debug and code testing (results in Serial monitor)
       com.USB = comUSBconnected(com.USB);                                       // Works as far as tested (i.e. it always detects the USB serial connection)
       com.WAN = comWANconnected();                                              // DUMMY (always false)
       if (com.USB || com.WAN) {

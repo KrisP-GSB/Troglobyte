@@ -8,4 +8,5 @@
       tmr.countMax[sens03_P]  = 12*60;  
     //. Other settings
       set.blinkLeds           = 1;                                              // 0: never blink, 1: blink only when connected, 2: always blink
+      set.debug               = true;
   }
