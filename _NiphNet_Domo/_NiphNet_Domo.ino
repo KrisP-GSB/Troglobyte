@@ -1,13 +1,12 @@
 //..|....|....|....|....|....|....|....|....|....|....|....|....|....|....|....|
 //  Initialise
   //  Pin assignments
-      const int ledPin00 = LED_BUILTIN;                         // LED_BUILTIN points to the internal led, D13 on the Nano (see https://www.arduino.cc/en/Tutorial/Blink)
+      const int ledPin00 = LED_BUILTIN;                                         // LED_BUILTIN points to the internal led, D13 on the Nano (see https://www.arduino.cc/en/Tutorial/Blink)
   //  Variables
   //. Identification and information
-  //. Setting up timer
   //. Connection
-      boolean tgbUSB = false;
-      boolean tgbWAN = false;
+      boolean tgbUSB = false;                                                   // USB serial connection detected
+      boolean tgbWAN = false;                                                   // LoRa connection active
   //. Counter
       long tmrBaseIntMS;
 
@@ -34,53 +33,58 @@
       
   //. Input
   //..Initialising parameters
-    // I think the below should become a class (is being reused)
-      byte setBlink   ;     // Blink the leds or not
+  //. TGB-wide reusable parameters
+      boolean tgbDo  = false;                                                   // Do or Don't parameter (see e.g. command switch)
+  //. Input
+  //..Initialising parameters
+      byte setBlink   ;                                                         // Turn leds on or off
 
 //..|....|....|....|....|....|....|....|....|....|....|....|....|....|....|....|
 void setup() {
   //  Initialise
   //. Hardware
-      pinMode(ledPin00, OUTPUT);        
+      pinMode(ledPin00, OUTPUT);                                                // Pins are input buy default
   //. Communication
       Serial.begin(9600);                                                       // Default for most Arduinos
   //  Input
   //. Reading variables
-      inpRead();
+      inpRead();                                                                // DUMMY: these variables will be provided externally, or have been stored in case of reboot
   //. Input dependent parameters
-      tmrBaseIntMS = tmrBaseInt * tmrSleepInterval; // Take action every x milliseconds
+      tmrBaseIntMS = tmrBaseInt * tmrSleepInterval;                             // Take action every x milliseconds (base counter time step)
   //  Last things to do
   //. Confirm proper initialisation      
-      BlinkInitiateSuccess();           // Pauze, three blinks, and a pauze to put Christian at ease (bootloader or arduino will have blinked before this)
+      BlinkInitiateSuccess();                                                   // Three distincitve blinks to mark start (other native, always shorter blinks will have occured before)
   //. Reset parameters to start cycle with measurement
-      if (tmrBlinkInt > 0)  {tmrBlinkAction = 1;}     // First action: measure everything 
-      if (tmrTInt     > 0)  {tmrTAction     = 1;}       
+      if (tmrBlinkInt > 0)  {tmrBlinkAction = 1;}                               // First action: measure everything 
+      if (tmrTInt     > 0)  {tmrTAction     = 1;}                               // Therefore all ...Actions to 1
       if (tmrRHInt    > 0)  {tmrRHAction    = 1;}      
       if (tmrPInt     > 0)  {tmrPAction     = 1;}             
       if (tmrXInt     > 0)  {tmrXAction     = 1;}
-      tmrMillis0 = millis();                          // Reset the time
+      tmrMillis0 = millis();                                                    // Reset the timer
 }
 
 //..|....|....|....|....|....|....|....|....|....|....|....|....|....|....|....|
 void loop() { 
   //  Receiving commands  
-      tgbUSB = comUSBconnected(tgbUSB); //......................................Works as far as tested (i.e. it always detects the USB serial connection)
-      tgbWAN = comWANconnected(); //............................................Dummy (always false)
+      tgbUSB = comUSBconnected(tgbUSB);                                         // Works as far as tested (i.e. it always detects the USB serial connection)
+      tgbWAN = comWANconnected();                                               // DUMMY (always false)
       if (tgbUSB || tgbWAN) {
-        switch(cmdGet()) {                    // Reacting to commands
-          case ' ': 
-            break;                              // Nothing received, proceed
+        switch(comGet()) {                                                      // Reacting to commands. Note that even cmdGet is an int, and so is a character between single quotes ('')! (Only double quotes indicate a char/string.)
+          tgbDo = true;                                                         // Did the command result in a delay? True for most commands
+          case 0: 
+            tgbDo = false;                                                      // No delay (maybe the only exception, but it happens a lot)
+            break;                                                              // Nothing received, proceed
           case '?': 
             cmdImHere();
-            break;                            // For reasons not clear not me, code will fail when this break is not in place. It is in any case more efficient to have it. 
-          case 'R':                           // Open command prompt to receive commands (pauzes all activities)
+            break;                                                              
+          case 'R':                                                             // Open command prompt to receive commands (pauzes all activities)
             cmdRun();                         
             break; 
-          case 'P':                           // Suspend all actions untill P is pressed again
+          case 'P':                                                             // Suspend all actions untill P is pressed again
             cmdPauze();
             break; 
           case 'S':
-            // cmdStopMeasuring();            // Be careful with this, needs certainty to be turned on again
+            // cmdStopMeasuring();                                              // Be careful with this, needs certainty to be turned on again
             break; 
           case 'T': 
             // LiveMeasureT()
@@ -88,17 +92,17 @@ void loop() {
           case 'M': 
             // LiveMeasureAll()
             break; 
-          case '>':                           // Dump all data to serial
+          case '>':                                                             // Dump all data to serial
             // cmdPlay();
             break; 
           default:
-            Serial.println("Unknown command");  // No command or command not recognised 
+            Serial.println("Unknown command");                                  // No command or command not recognised 
             break;
         }
-      } else {
-        // IF !(tgbCmd = 0x00) THEN CheckDelayCmd() END IF
+        if (tgbDo) {
+          tmrCheckTime();                                                       // Correct timer (only necessary when there were delays, command actions).
+        }
       }
-      tmrCheckTime();
 
   //  Executing measurements
       if (tmrTAction == 1) {
@@ -117,7 +121,7 @@ void loop() {
         msrX();
         tmrXAction = 0;
       }
-      if (tmrBlinkAction == 1) {              // Placze last: a blink not followed by a pauze
+      if (tmrBlinkAction == 1) {              // Place last: a blink not followed by a pauze
         msrBlink();
         tmrBlinkAction = 0;
       }

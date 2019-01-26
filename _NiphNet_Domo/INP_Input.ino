@@ -1,3 +1,4 @@
+//..|....|....|....|....|....|....|....|....|....|....|....|....|....|....|....|
   void inpRead(){
     tmrBaseInt  = 5;    // Take action every y counts
     tmrBlinkInt = 0;    // Take action every z base counts (i.e. multiples of base counts), 
