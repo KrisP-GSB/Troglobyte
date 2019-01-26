@@ -9,9 +9,12 @@
       } led;
   //  Variables
   //. Identification and information
-  //. Connection
-      boolean tgbUSB = false;                                                   // USB serial connection detected
-      boolean tgbWAN = false;                                                   // LoRa connection active
+  //. Communication
+      struct {
+        boolean USB = false;                                                    // com.USB - USB serial connection detected
+        boolean WAN = false;                                                    //    .WAN - LoRa connection active
+      } com; 
+
   //. Counter
 //      long tmrBaseIntMS;
 
@@ -27,11 +30,13 @@
         long timerBaseMax_ms; 
       } tmr;
 
-      enum typSensor{ sensBase,   sensLed,    sens01_T,  sens02_RH, 
-                      sens03_P,   sens04_X,   sens05_X,  sens06_X, 
-                      sens07_X,   sens08_X,   sens09_X,  sens10_X, 
-                      sens11_X,   sens12_X,   sens13_X,  sens14_X   
-                    };                                                          // C++ command, for explicitly naming the sensors
+      enum typSensor                                                            // Explicitly naming the sensors
+        { sensBase,   sensLed,    sens01_T,  sens02_RH, 
+          sens03_P,   sens04_X,   sens05_X,  sens06_X, 
+          sens07_X,   sens08_X,   sens09_X,  sens10_X, 
+          sens11_X,   sens12_X,   sens13_X,  sens14_X   
+        };                                                          
+
       struct {
         typSensor sensor;      
         const String tgbWhoAmI = "NiphDomo.000.000.T_RH_P._.";    // Type.Version.Serial.SensorInternal.SensorsExternal    // Consider using PROGMEM: https://www.arduino.cc/reference/en/language/variables/utilities/progmem/
@@ -74,9 +79,9 @@ void setup() {
 //..|....|....|....|....|....|....|....|....|....|....|....|....|....|....|....|
 void loop() { 
   //  Receiving commands  
-      tgbUSB = comUSBconnected(tgbUSB);                                         // Works as far as tested (i.e. it always detects the USB serial connection)
-      tgbWAN = comWANconnected();                                               // DUMMY (always false)
-      if (tgbUSB || tgbWAN) {
+      com.USB = comUSBconnected(com.USB);                                         // Works as far as tested (i.e. it always detects the USB serial connection)
+      com.WAN = comWANconnected();                                               // DUMMY (always false)
+      if (com.USB || com.WAN) {
         switch(comGet()) {                                                      // Reacting to commands. Note that even cmdGet is an int, and so is a character between single quotes ('')! (Only double quotes indicate a char/string.)
           tgbDo = true;                                                         // Did the command result in a delay? True for most commands
           case 0: 
@@ -135,7 +140,7 @@ void loop() {
       }
 
   //  Sleep or short delay (depending on whether connected)
-  if  (tgbUSB == 1 || tgbWAN == 1) {
+  if  (com.USB || com.WAN) {
     tmpSleep();           // Sleep until next second has passed, and increase counters.
   } else {
     delay(100);           // Delay of 100 ms is acceptable for most input.
