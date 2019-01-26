@@ -28,7 +28,6 @@
         int           counts[sensLed + 1] = {};                                 //    .count[] - count[0] -> base counter, others multiples of base counter. Range base counter: 1 s to ~18 days. {} initiates all values to 0, see: https://stackoverflow.com/questions/201101/how-to-initialize-all-members-of-an-array-to-the-same-value.
         const int     sleep_ms = 1000;                                          //    .sleep_ms - Equal to the sleep duration (1 s or 1000 ms for most clocks)
         unsigned long timer0_ms;                                                //    .timer0_ms - timer starting point (in ms)
-//        long          timerBaseMax_ms;                                          //    .timerBaseMax_ms - timer limit (in ms) for base counters (only base needs a timer, others can use counters)
       } tmr;
 
   //  Identification and information
@@ -59,8 +58,6 @@ void setup() {
   //  Input
   //. Reading variables
       inpRead();                                                                // DUMMY: these variables will be provided externally, or have been stored in case of reboot
-  //. Input dependent parameters
-//      tmr.timerBaseMax_ms = tmr.countMax[sensBase] * tmr.sleep_ms;              // Take action every x milliseconds (base counter time step)
   //. Set Action to true
       for (int s = sensLed; s > sensBase;  s--) {                               // Flagging all sensors for action before entering loop
         tmr.action |= (tmr.countMax[s] > 0) << s;                               // Explanation, see: https://github.com/KrisP-GSB/Troglobyte/wiki/Initiate-sensor-actions
@@ -74,7 +71,6 @@ void setup() {
 //..|....|....|....|....|....|....|....|....|....|....|....|....|....|....|....|
 void loop() { 
   //  Receiving commands  
-//if (set.debug) {Serial.println (tmr.action, BIN);}                          // Debug and code testing (results in Serial monitor)
       com.USB = comUSBconnected(com.USB);                                       // Works as far as tested (i.e. it always detects the USB serial connection)
       com.WAN = comWANconnected();                                              // DUMMY (always false)
       if (com.USB || com.WAN) {
@@ -90,15 +86,15 @@ void loop() {
           case '>': // cmdPlay(); break;                                        // Dump all data to serial
           default: Serial.println("Unknown command"); break;                    // No command or command not recognised 
         }
-        if (tgb.go) {tmrCheckTime(); tgb.go = false;}                            // Correct timer (only necessary when there were delays, command actions). Also reset the generic variable to default.
+        if (tgb.go) {tmrCheckTime(); tgb.go = false;}                           // Correct timer (only necessary when there were delays, command actions). Also reset the generic variable to default.
       }
 
   //  Executing measurements
-      if (tmrAction(sens01_T)) {msrT();}
+      if (tmrAction(sens01_T )) {msrT();}
       if (tmrAction(sens02_RH)) {msrRH();}
-      if (tmrAction(sens03_P)) {msrP();}
+      if (tmrAction(sens03_P )) {msrP();}
       //...                                                                     // Room for other sensors (up to sens14_X)
-      if (tmrAction(sensLed)) {msrBlink();}                                     // Place last: a blink not followed by a pauze
+      if (tmrAction(sensLed  )) {msrBlink();}                                   // Place last: a blink not followed by a pauze
 
   //  Sleep or delay                                                            // Depending on whether connected
   if  (com.USB || com.WAN) {

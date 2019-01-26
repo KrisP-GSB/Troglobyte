@@ -2,6 +2,7 @@
 //  Near term
 //    .Header
 //    .enum led behaviour
+//    .rename the blink functions
 //    .Guided menu
 //
 //  Milestones
