@@ -17,8 +17,8 @@
         if(Serial) {                //    Serial, see: https://www.arduino.cc/reference/en/language/functions/communication/serial/ifserial/
           delay(50);                //    For debouncing during connecting
           if(Serial) {
-            setBlink++;              //    Increase by one, so setBlink == 1 will pass. Next line is an example.
-            if (setBlink>1) {BlinkConnected();}
+            set.blinkLeds++;              //    Increase by one, so set.blinkLeds == 1 will pass. Next line is an example.
+            if (set.blinkLeds>1) {BlinkConnected();}
             return(true);           //    If still connected, will return true
           } else {
             return(false);
@@ -30,8 +30,8 @@
         if (Serial) { 
           return(true);             //  Confirm connection (no debouncing needed)
         } else {
-          if (setBlink>1) {BlinkDisconnected();}
-          setBlink = setBlink - 1;
+          if (set.blinkLeds>1) {BlinkDisconnected();}
+          set.blinkLeds--;
           return(false);            //  Connection broken
         }
       }

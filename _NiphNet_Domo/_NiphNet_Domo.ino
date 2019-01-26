@@ -64,7 +64,7 @@ void setup() {
       tmr.timerBaseMax_ms = tmr.countMax[sensBase] * tmr.sleep_ms;              // Take action every x milliseconds (base counter time step)
   //  Last things to do
   //. Confirm proper initialisation      
-//      BlinkInitiateSuccess();                                                   // Three distincitve blinks to mark start (other native, always shorter blinks will have occured before)
+      BlinkInitiateSuccess();                                                   // Three distincitve blinks to mark start (other native, always shorter blinks will have occured before)
   //. Start cycle with measurement
       for (int s = 16; s > sensBase;  s--) {                                    // Wiki is needed to document what this loop does
         tmr.action & tmr.countMax[s];
@@ -117,20 +117,20 @@ void loop() {
             break;
         }
         if (tgb.go) {
-//          tmrCheckTime();                                                       // Correct timer (only necessary when there were delays, command actions).
+          tmrCheckTime();                                                       // Correct timer (only necessary when there were delays, command actions).
         }
       }
 
   //  Executing measurements
-//      if (tmrAction(sens01_T)) {msrT();}
-//      if (tmrAction(sens02_RH)) {msrRH();}
-//      if (tmrAction(sens03_P)) {msrP();}
+      if (tmrAction(sens01_T)) {msrT();}
+      if (tmrAction(sens02_RH)) {msrRH();}
+      if (tmrAction(sens03_P)) {msrP();}
       //... Room for other sensors (up to sens14_X)
-//      if (tmrAction(sensBlink)) {msrBlink();}                                     // Place last: a blink not followed by a pauze
+      if (tmrAction(sensLed)) {msrBlink();}                                     // Place last: a blink not followed by a pauze
 
   //  Sleep or short delay (depending on whether connected)
   if  (com.USB || com.WAN) {
-//    tmpSleep();           // Sleep until next second has passed, and increase counters.
+    tmpSleep();           // Sleep until next second has passed, and increase counters.
   } else {
     delay(100);           // Delay of 100 ms is acceptable for most input.
   }
