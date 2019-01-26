@@ -13,10 +13,10 @@
   
 //. Initialisation
     void BlinkInitiateSuccess(){
-      digitalWrite(led.pin00, LOW);
+      digitalWrite(pin.led00, LOW);
       delay(1000);
       for (int i=0; i<=5; i++){
-        digitalWrite(led.pin00, !digitalRead(led.pin00));         // Most efficient code, avoiding a boolean
+        digitalWrite(pin.led00, !digitalRead(pin.led00));         // Most efficient code, avoiding a boolean
         delay(500);   
       }
       delay(1500);                                              // Adding 1.5 s to have 2 s pauze before starting real code
@@ -31,10 +31,10 @@
   }
 //. Short blink
   void BlinkShort(){
-      digitalWrite(led.pin00, LOW);
-      digitalWrite(led.pin00, HIGH);
+      digitalWrite(pin.led00, LOW);
+      digitalWrite(pin.led00, HIGH);
       delay(50);
-      digitalWrite(led.pin00, LOW);
+      digitalWrite(pin.led00, LOW);
   }
 //. Morse confirmations             // See: https://en.wikipedia.org/wiki/Morse_code
 //..BlinkT      -
@@ -59,43 +59,43 @@
 //. Pauze indicater
 //..Start of pauze
     void BlinkPauzeStart(){
-      digitalWrite(led.pin00, HIGH);
+      digitalWrite(pin.led00, HIGH);
     }
 //..End of pauze
     void BlinkPauzeEnd(){
-      digitalWrite(led.pin00, LOW);
+      digitalWrite(pin.led00, LOW);
     }
 
 //. Generic code
   void BlinkFadeOut(){
     for (int i=0; i<=10000; i=i+100){                               // LED fading out during ~1s (in 11 steps)
-      digitalWrite(led.pin00, LOW);
+      digitalWrite(pin.led00, LOW);
       delayMicroseconds(i);
-      digitalWrite(led.pin00, HIGH);
+      digitalWrite(pin.led00, HIGH);
       delayMicroseconds(10000-i);        
     }      
-    digitalWrite(led.pin00, LOW);
+    digitalWrite(pin.led00, LOW);
   }
   void BlinkFadeIn(){
     for (int i=0; i<=10000; i=i+100){                               // LED fading out during ~1s (in 11 steps)
-      digitalWrite(led.pin00, HIGH);
+      digitalWrite(pin.led00, HIGH);
       delayMicroseconds(i);
-      digitalWrite(led.pin00, LOW);
+      digitalWrite(pin.led00, LOW);
       delayMicroseconds(10000-i);        
     }      
   }
 
 //. Morse code
   void BlinkDot(){
-    digitalWrite(led.pin00, HIGH);
+    digitalWrite(pin.led00, HIGH);
     delay(200);                             // One unit
-    digitalWrite(led.pin00, LOW);
+    digitalWrite(pin.led00, LOW);
     delay(200);                             // One unit
   }
   void BlinkDash(){
-    digitalWrite(led.pin00, HIGH);
+    digitalWrite(pin.led00, HIGH);
     delay(600);                             // Three unit
-    digitalWrite(led.pin00, LOW);
+    digitalWrite(pin.led00, LOW);
     delay(200);                             // One unit
   }
   void EndLetter() {

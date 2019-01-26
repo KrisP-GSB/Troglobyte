@@ -2,11 +2,11 @@
 //  Initialise
   //  Pin assignments
       struct {
-        const int pin00 = LED_BUILTIN;                                          // led.pin00 - LED_BUILTIN points to the internal led, D13 on the Nano (see https://www.arduino.cc/en/Tutorial/Blink)
-        const int pin01 = 0;                                                    //    .pin01 - Open slots for three external leds
-        const int pin02 = 0;                                                    //    .pin02
-        const int pin03 = 0;                                                    //    .pin03
-      } led;
+        const int led00 = LED_BUILTIN;                                          // pin.led00 - LED_BUILTIN points to the internal led, D13 on the Nano (see https://www.arduino.cc/en/Tutorial/Blink)
+        const int led01 = 0;                                                    //    .led01 - Open slots for three external leds
+        const int led02 = 0;                                                    //    .led02
+        const int led03 = 0;                                                    //    .led03
+      } pin;
   //  Variables
   //. Identification and information
   //. Communication
@@ -56,7 +56,7 @@
 void setup() {
   //  Initialise
   //. Hardware
-      pinMode(led.pin00, OUTPUT);                                                // Pins are input buy default
+      pinMode(pin.led00, OUTPUT);                                                // Pins are input buy default
   //. Communication
       Serial.begin(9600);                                                       // Default for most Arduinos
   //  Input
