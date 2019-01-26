@@ -3,7 +3,6 @@
 //    .Header
 //    .enum led behaviour
 //    .rename the blink functions
-//    .Guided menu
 //
 //  Milestones
 //    .Clock integrated
@@ -11,3 +10,4 @@
 //    .LoRa integrated
 //    .EEProm integrated
 //    .Link to ShrimpCloud integrated
+//    .Guided menu
