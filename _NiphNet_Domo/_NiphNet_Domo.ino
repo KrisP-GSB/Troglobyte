@@ -122,30 +122,15 @@ void loop() {
       }
 
   //  Executing measurements
-      if (tmrTAction == 1) {
-        msrT(); 
-        tmrTAction = 0;
-      }
-      if (tmrRHAction == 1) {
-        msrRH();
-        tmrRHAction = 0;
-      }
-      if (tmrPAction == 1) {
-        msrP();
-        tmrPAction = 0;
-      }
-      if (tmrXAction == 1) {
-        msrX();
-        tmrXAction = 0;
-      }
-      if (tmrBlinkAction == 1) {              // Place last: a blink not followed by a pauze
-        msrBlink();
-        tmrBlinkAction = 0;
-      }
+//      if (tmrAction(sens01_T)) {msrT();}
+//      if (tmrAction(sens02_RH)) {msrRH();}
+//      if (tmrAction(sens03_P)) {msrP();}
+      //... Room for other sensors (up to sens14_X)
+//      if (tmrAction(sensBlink)) {msrBlink();}                                     // Place last: a blink not followed by a pauze
 
   //  Sleep or short delay (depending on whether connected)
   if  (com.USB || com.WAN) {
-    tmpSleep();           // Sleep until next second has passed, and increase counters.
+//    tmpSleep();           // Sleep until next second has passed, and increase counters.
   } else {
     delay(100);           // Delay of 100 ms is acceptable for most input.
   }
