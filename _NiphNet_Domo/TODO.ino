@@ -1,6 +1,5 @@
 //..|....|....|....|....|....|....|....|....|....|....|....|....|....|....|....|
 //  Near term
-//    .enum led behaviour
 //    .rename the blink functions
 //
 //  Milestones
