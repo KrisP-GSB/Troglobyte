@@ -8,6 +8,14 @@
         const int led03 = 0;                                                    //    .led03
       } pin;
       
+  //  Naming
+      enum typSensor {                                                          // Explicitly naming the sensors
+        sensBase,   sensLed,    sens01_T,  sens02_RH, 
+        sens03_P,   sens04_X,   sens05_X,  sens06_X, 
+        sens07_X,   sens08_X,   sens09_X,  sens10_X, 
+        sens11_X,   sens12_X,   sens13_X,  sens14_X   
+      };                                                          
+
   //  Communication
       struct {
         boolean USB = false;                                                    // com.USB - USB serial connection detected
@@ -16,7 +24,7 @@
 
   //  Timers and related counters
       struct {
-        int           action = 0;                                               // tmr.action - 0b0000000000000000 (so 16 flags).
+        int           action = 0;                                               // tmr.action - 0b0000000000000000 (so 16 flags). Good tutorial on using bits: https://playground.arduino.cc/Code/BitMath#bit_pack
         int           countMax[16];                                             //  ` .countMax[] - User defined: 0: sensor not used, value: number of counts to take action.
         int           counts[16] = {0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0};           //    .count[] - count[0] -> base counter, others multiples of base counter. Range base counter: 1 s to ~18 days.
         const int     sleep_ms = 1000;                                          //    .sleep_ms - Equal to the sleep duration (1 s or 1000 ms for most clocks)
@@ -25,32 +33,23 @@
         long          timerBaseMax_ms;                                          //    .timerBaseMax_ms - timer limit (in ms) for base counters (only base needs a timer, others can use counters)
       } tmr;
 
-
-      // Good tutorial on using bits: https://playground.arduino.cc/Code/BitMath#bit_pack
-
-
-      enum typSensor                                                            // Explicitly naming the sensors
-        { sensBase,   sensLed,    sens01_T,  sens02_RH, 
-          sens03_P,   sens04_X,   sens05_X,  sens06_X, 
-          sens07_X,   sens08_X,   sens09_X,  sens10_X, 
-          sens11_X,   sens12_X,   sens13_X,  sens14_X   
-        };                                                          
-
-  //. Identification and information
+  //  Identification and information
       struct {
-        typSensor sensor;      
-        const String tgbWhoAmI = "NiphDomo.000.000.T_RH_P._.";    // Type.Version.Serial.SensorInternal.SensorsExternal    // Consider using PROGMEM: https://www.arduino.cc/reference/en/language/variables/utilities/progmem/
-        String tgbStartTGB = "dd-mmm-yyyy hh:mm UCT";       // Dummy: ask the clock
-        String tgbLocation = ""; // Where is the Niph located (needs to be command controlled, e.g. when replacing one Niph with another)
+        //typSensor     sensor;      
+        const String  tgbWhoAmI = "NiphDomo.000.000.T_RH_P._.";                 // Type.Version.Serial.SensorInternal.SensorsExternal    // Consider using PROGMEM: https://www.arduino.cc/reference/en/language/variables/utilities/progmem/
+        String        tgbStartTGB = "dd-mmm-yyyy hh:mm UCT";                    // Dummy: ask the clock
+        String        tgbLocation = "";                                         // Where is the Niph located (needs to be command controlled, e.g. when replacing one Niph with another)
       } tgb;
-      
-  //. Input
-  //..Initialising parameters
-  //. TGB-wide reusable parameters
-      boolean tgbDo  = false;                                                   // Do or Don't parameter (see e.g. command switch)
-  //. Input
-  //..Initialising parameters
-      byte setBlink   ;                                                         // Turn leds on or off
+
+  //  Operational settings
+      struct {
+        byte blink;                                                             // Turn leds on or off
+      } set; 
+  
+  //  Generic variables                                                         // TGB-wide reusable parameters
+      struct {
+        boolean do = false;                                                     // Do or Don't parameter (see e.g. command switch)
+      } tgb;
 
 //..|....|....|....|....|....|....|....|....|....|....|....|....|....|....|....|
 void setup() {
@@ -83,9 +82,9 @@ void loop() {
       com.WAN = comWANconnected();                                               // DUMMY (always false)
       if (com.USB || com.WAN) {
         switch(comGet()) {                                                      // Reacting to commands. Note that even cmdGet is an int, and so is a character between single quotes ('')! (Only double quotes indicate a char/string.)
-          tgbDo = true;                                                         // Did the command result in a delay? True for most commands
+          tgb.do = true;                                                         // Did the command result in a delay? True for most commands
           case 0: 
-            tgbDo = false;                                                      // No delay (maybe the only exception, but it happens a lot)
+            tgb.do = false;                                                      // No delay (maybe the only exception, but it happens a lot)
             break;                                                              // Nothing received, proceed
           case '?': 
             cmdImHere();
@@ -112,7 +111,7 @@ void loop() {
             Serial.println("Unknown command");                                  // No command or command not recognised 
             break;
         }
-        if (tgbDo) {
+        if (tgb.do) {
           tmrCheckTime();                                                       // Correct timer (only necessary when there were delays, command actions).
         }
       }
