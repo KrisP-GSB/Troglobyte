@@ -7,28 +7,27 @@
         const int led02 = 0;                                                    //    .led02
         const int led03 = 0;                                                    //    .led03
       } pin;
-  //  Variables
-  //. Identification and information
-  //. Communication
+      
+  //  Communication
       struct {
         boolean USB = false;                                                    // com.USB - USB serial connection detected
         boolean WAN = false;                                                    //    .WAN - LoRa connection active
       } com; 
 
-  //. Counter
-//      long tmrBaseIntMS;
+  //  Timers and related counters
+      struct {
+        int           action = 0;                                               // tmr.action - 0b0000000000000000 (so 16 flags).
+        int           countMax[16];                                             //  ` .countMax[] - User defined: 0: sensor not used, value: number of counts to take action.
+        int           counts[16] = {0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0};           //    .count[] - count[0] -> base counter, others multiples of base counter. Range base counter: 1 s to ~18 days.
+        const int     sleep_ms = 1000;                                          //    .sleep_ms - Equal to the sleep duration (1 s or 1000 ms for most clocks)
+        unsigned int  timer_ms = 0;                                             //    .timer_ms - 
+        unsigned long timer0_ms;                                                //    .timer0_ms - timer starting point (in ms)
+        long          timerBaseMax_ms;                                          //    .timerBaseMax_ms - timer limit (in ms) for base counters (only base needs a timer, others can use counters)
+      } tmr;
+
 
       // Good tutorial on using bits: https://playground.arduino.cc/Code/BitMath#bit_pack
 
-      struct {
-        int action = 0;                                                         // 0b0000000000000000 (so 16 flags).
-        int countMax[16];                                                       // User defined: 0: sensor not used, value: number of counts to take action.
-        int counts[16] = {0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0};                     // count[0] -> base counter, others multiples of base counter. Range base counter: 1 s to ~18 days.
-        const int sleep_ms = 1000;                                              // Equal to the sleep duration (1s or 1000ms for most clocks)
-        unsigned int timer_ms = 0;          
-        unsigned long timer0_ms;
-        long timerBaseMax_ms; 
-      } tmr;
 
       enum typSensor                                                            // Explicitly naming the sensors
         { sensBase,   sensLed,    sens01_T,  sens02_RH, 
@@ -37,6 +36,7 @@
           sens11_X,   sens12_X,   sens13_X,  sens14_X   
         };                                                          
 
+  //. Identification and information
       struct {
         typSensor sensor;      
         const String tgbWhoAmI = "NiphDomo.000.000.T_RH_P._.";    // Type.Version.Serial.SensorInternal.SensorsExternal    // Consider using PROGMEM: https://www.arduino.cc/reference/en/language/variables/utilities/progmem/
@@ -63,7 +63,7 @@ void setup() {
   //. Reading variables
       inpRead();                                                                // DUMMY: these variables will be provided externally, or have been stored in case of reboot
   //. Input dependent parameters
-      tmrBaseIntMS = tmrBaseInt * tmrSleepInterval;                             // Take action every x milliseconds (base counter time step)
+      tmr.timerBaseMax_ms = tmrBaseInt * tmrSleepInterval;                             // Take action every x milliseconds (base counter time step)
   //  Last things to do
   //. Confirm proper initialisation      
       BlinkInitiateSuccess();                                                   // Three distincitve blinks to mark start (other native, always shorter blinks will have occured before)
