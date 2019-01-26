@@ -4,37 +4,39 @@
       const int ledPin00 = LED_BUILTIN;                                         // LED_BUILTIN points to the internal led, D13 on the Nano (see https://www.arduino.cc/en/Tutorial/Blink)
   //  Variables
   //. Identification and information
-      const String tgbWhoAmI = "NiphDomo.000.000.T_RH_P._.";                    // Type.Version.Serial.SensorInternal.SensorsExternal    // Consider using EEPROM or PROGMEM: https://www.arduino.cc/reference/en/language/variables/utilities/progmem/
-      const String tgbStartTGB = "dd-mmm-yyyy hh:mm UCT";                       // Dummy: ask the clock
-  //. Setting up timer
-      const int tmrSleepInterval = 1000;                                        // Equal to the sleep duration (1 s or 1000 ms for most clocks)
-      unsigned long tmrMillis0;                                                 // Reference value for the timer (needs to be unsigned to work properly)
   //. Connection
       boolean tgbUSB = false;                                                   // USB serial connection detected
       boolean tgbWAN = false;                                                   // LoRa connection active
   //. Counter
       long tmrBaseIntMS;
-      byte tmrBaseCnt     = 0;                                                  // Base counter in seconds 
-      byte tmrBlinkCnt    = 0;                                                  // Counter in times base counts 
-      byte tmrBlinkAction = 0;                                                  // Flag indicating to take action
-      byte tmrTCnt        = 0;          
-      byte tmrTAction     = 0;       
-      byte tmrRHCnt       = 0;         
-      byte tmrRHAction    = 0;      
-      byte tmrPCnt        = 0;          
-      byte tmrPAction     = 0;   
-      byte tmrXCnt        = 0;
-      byte tmrXAction     = 0;    
+
+      // Good tutorial on using bits: https://playground.arduino.cc/Code/BitMath#bit_pack
+
+      struct {
+        int action = 0;                                                         // 0b0000000000000000 (so 16 flags).
+        int countMax[15];                                                       // User defined: 0: sensor not used, value: number of counts to take action.
+        int counts[16] = {0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0};                      // count[0] -> base counter, others multiples of base counter. Range base counter: 1 s to ~18 days.
+        const int sleep_ms = 1000;                                              // Equal to the sleep duration (1s or 1000ms for most clocks)
+        unsigned int timer_ms = 0;          
+        unsigned long timer0_ms;
+      } tmr;
+
+      enum typSensor{ sensBase,   sensLed,    sens01_T,  sens02_RH, 
+                      sens03_P,   sens04_X,   sens05_X,  sens06_X, 
+                      sens07_X,   sens08_X,   sens09_X,  sens10_X, 
+                      sens11_X,   sens12_X,   sens13_X,  sens14_X   };               // C++ command, for explicitly naming the sensors
+      struct {
+        typSensor sensor;      
+        const String tgbWhoAmI = "NiphDomo.000.000.T_RH_P._.";    // Type.Version.Serial.SensorInternal.SensorsExternal    // Consider using PROGMEM: https://www.arduino.cc/reference/en/language/variables/utilities/progmem/
+        String tgbStartTGB = "dd-mmm-yyyy hh:mm UCT";       //Dummy: ask the clock
+      } tgb;
+      
+  //. Input
+  //..Initialising parameters
   //. TGB-wide reusable parameters
       boolean tgbDo  = false;                                                   // Do or Don't parameter (see e.g. command switch)
   //. Input
   //..Initialising parameters
-      int tmrBaseInt  ;                                                         // Take action every y counts
-      int tmrBlinkInt ;                                                         // Take action every z base counts (i.e. multiples of base counts), 
-      int tmrTInt     ;                                                         // use 0 to disable
-      int tmrRHInt    ;    
-      int tmrPInt     ;  
-      int tmrXInt     ;
       byte setBlink   ;                                                         // Turn leds on or off
 
 //..|....|....|....|....|....|....|....|....|....|....|....|....|....|....|....|
