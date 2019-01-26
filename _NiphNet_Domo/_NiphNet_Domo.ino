@@ -10,10 +10,9 @@
       
   //  Naming
       enum typSensor {                                                          // Explicitly naming the sensors
-        sensBase,   sensLed,    sens01_T,  sens02_RH, 
-        sens03_P,   sens04_X,   sens05_X,  sens06_X, 
-        sens07_X,   sens08_X,   sens09_X,  sens10_X, 
-        sens11_X,   sens12_X,   sens13_X,  sens14_X   
+        sensBase, sens01_T, sens02_RH,                                          // sensBase and sensLed mark start and beginning of enum list
+        sens03_P,                                                               // Insert up to 'sens14_X' depending on how many sensors are active
+        sensLed                                                                 // Only other updates needed: input parameters need to be set, and the 'executing measurements'
       };                                                          
 
   //  Communication
@@ -24,7 +23,7 @@
 
   //  Timers and related counters
       struct {
-        int           action = 0;                                               // tmr.action - 0b0000000000000000 (so 16 flags). Good tutorial on using bits: https://playground.arduino.cc/Code/BitMath#bit_pack
+        int           action = 0;                                               // tmr.action - 0b0000000000000000 (so 16 flags). Base (position 0) is not used. Good tutorial on using bits: https://playground.arduino.cc/Code/BitMath#bit_pack
         int           countMax[16];                                             //  ` .countMax[] - User defined: 0: sensor not used, value: number of counts to take action.
         int           counts[16] = {0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0};           //    .count[] - count[0] -> base counter, others multiples of base counter. Range base counter: 1 s to ~18 days.
         const int     sleep_ms = 1000;                                          //    .sleep_ms - Equal to the sleep duration (1 s or 1000 ms for most clocks)
@@ -66,8 +65,8 @@ void setup() {
   //  Last things to do
   //. Confirm proper initialisation      
 //      BlinkInitiateSuccess();                                                   // Three distincitve blinks to mark start (other native, always shorter blinks will have occured before)
-  //. Reset parameters to start cycle with measurement
-      for (int s = 16; s > sensBase;  s--) {
+  //. Start cycle with measurement
+      for (int s = 16; s > sensBase;  s--) {                                    // Wiki is needed to document what this loop does
         tmr.action & tmr.countMax[s];
         tmr.action <<= 1;
       }
@@ -88,9 +87,9 @@ void loop() {
       com.WAN = comWANconnected();                                               // DUMMY (always false)
       if (com.USB || com.WAN) {
         switch(comGet()) {                                                      // Reacting to commands. Note that even cmdGet is an int, and so is a character between single quotes ('')! (Only double quotes indicate a char/string.)
-          tgb.do = true;                                                         // Did the command result in a delay? True for most commands
+          tgb.go = true;                                                         // Did the command result in a delay? True for most commands
           case 0: 
-            tgb.do = false;                                                      // No delay (maybe the only exception, but it happens a lot)
+            tgb.go = false;                                                      // No delay (maybe the only exception, but it happens a lot)
             break;                                                              // Nothing received, proceed
           case '?': 
             cmdImHere();
@@ -118,7 +117,7 @@ void loop() {
             break;
         }
         if (tgb.go) {
-          tmrCheckTime();                                                       // Correct timer (only necessary when there were delays, command actions).
+//          tmrCheckTime();                                                       // Correct timer (only necessary when there were delays, command actions).
         }
       }
 

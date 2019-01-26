@@ -1,57 +1,22 @@
 //..|....|....|....|....|....|....|....|....|....|....|....|....|....|....|....|
 //  Counter
-//. Increment base counter
+//. Increment base counter, and check other counters
   void cntBase(){
-    tmrBaseCnt++;
-    if (tmr.baseCount[sensBase] >= tmr.baseCountMax[sensBase]) {
-      tmrBaseCnt = 0;                 // Reset counter
-      cntBlink();                     // Increment all other counters
-      cntT();
-      cntRH();
-      cntP();
-    }    
-  }
-
-//. Increment blink counter                               // Serves as template for all other counters
-  void cntBlink(){
-    if (tmr.countMax[sensLed] > 0) {                               // 0 means: no such event, so do not execute
-      tmr.count[sensLed]++;
-      if (tmr.count[sensLed] >= tmr.countMax[sensLed]) {
-        tmr.count[sensLed] = 0;
-        tmr.action[sensLed] = 1;
-      }
-    }
-  }
-
-//. Increment temperature counter                               
-  void cntT(){
-    if (tmrTInt > 0) {                               // 0 means: no such event, so do not execute
-      tmrTCnt++;
-      if (tmrTCnt >= tmrTInt) {
-        tmrTCnt = 0;
-        tmrTAction = 1;
-      }
-    }
-  }
-
-//. Increment relative humidity counter
-  void cntRH(){
-    if (tmrRHInt > 0) {                               // 0 means: no such event, so do not execute
-      tmrRHCnt++;
-      if (tmrRHCnt >= tmrRHInt) {
-        tmrRHCnt = 0;
-        tmrRHAction = 1;
-      }
-    }
-  }
-
-//. Increment pressure counter
-  void cntP(){
-    if (tmrPInt > 0) {                               // 0 means: no such event, so do not execute
-      tmrPCnt++;
-      if (tmrPCnt >= tmrPInt) {
-        tmrPCnt = 0;
-        tmrPAction = 1;
-      }
-    }
+    //  Increment base counter
+        tmrBaseCnt++;
+    //  Maximum base counts 
+        if (tmr.baseCount[sensBase] >= tmr.baseCountMax[sensBase]) {
+        //. Reset base counter
+            tmrBaseCnt = 0;                 
+        //. Increment other counters
+            for (int s = sensBase + 1; s <= sensLed; s++) {                     // Loop sensor list (discussion on: https://stackoverflow.com/questions/261963/how-can-i-iterate-over-an-enum)
+              if (tmr.countMax[s] > 0) {                                        // 0 means: sensor disabled, so do not execute
+                tmr.count[s]++;                                                 // Increment each counter
+                if (tmr.count[s] >= tmr.countMax[s]) {                          // If maximum number of counts reached
+                  tmr.count[s] = 0;                                             //    .then reset
+                  tmr.action |= 1<<(s-1);                                       //    .and flag for action (see: https://stackoverflow.com/questions/47981/how-do-you-set-clear-and-toggle-a-single-bit)
+                }
+              }
+            }
+        }    
   }
