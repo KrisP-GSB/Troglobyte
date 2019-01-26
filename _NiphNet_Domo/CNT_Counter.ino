@@ -3,7 +3,7 @@
 //. Increment base counter
   void cntBase(){
     tmrBaseCnt++;
-    if (tmrBaseCnt >= tmrBaseInt) {
+    if (tmr.baseCount[sensBase] >= tmr.baseCountMax[sensBase]) {
       tmrBaseCnt = 0;                 // Reset counter
       cntBlink();                     // Increment all other counters
       cntT();

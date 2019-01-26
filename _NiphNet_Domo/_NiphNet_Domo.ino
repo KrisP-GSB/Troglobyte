@@ -28,7 +28,7 @@
         int           countMax[16];                                             //  ` .countMax[] - User defined: 0: sensor not used, value: number of counts to take action.
         int           counts[16] = {0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0};           //    .count[] - count[0] -> base counter, others multiples of base counter. Range base counter: 1 s to ~18 days.
         const int     sleep_ms = 1000;                                          //    .sleep_ms - Equal to the sleep duration (1 s or 1000 ms for most clocks)
-        unsigned int  timer_ms = 0;                                             //    .timer_ms - 
+//        unsigned int  timer_ms = 0;                                             //    .timer_ms - 
         unsigned long timer0_ms;                                                //    .timer0_ms - timer starting point (in ms)
         long          timerBaseMax_ms;                                          //    .timerBaseMax_ms - timer limit (in ms) for base counters (only base needs a timer, others can use counters)
       } tmr;
@@ -39,16 +39,16 @@
         const String  tgbWhoAmI = "NiphDomo.000.000.T_RH_P._.";                 // Type.Version.Serial.SensorInternal.SensorsExternal    // Consider using PROGMEM: https://www.arduino.cc/reference/en/language/variables/utilities/progmem/
         String        tgbStartTGB = "dd-mmm-yyyy hh:mm UCT";                    // Dummy: ask the clock
         String        tgbLocation = "";                                         // Where is the Niph located (needs to be command controlled, e.g. when replacing one Niph with another)
-      } tgb;
+      } inf;
 
   //  Operational settings
       struct {
-        byte blink;                                                             // Turn leds on or off
+        byte blinkLeds;                                                         // Turn leds on or off
       } set; 
   
   //  Generic variables                                                         // TGB-wide reusable parameters
       struct {
-        boolean do = false;                                                     // Do or Don't parameter (see e.g. command switch)
+        boolean go = false;                                                     // Do or Don't parameter (see e.g. command switch)
       } tgb;
 
 //..|....|....|....|....|....|....|....|....|....|....|....|....|....|....|....|
@@ -62,7 +62,7 @@ void setup() {
   //. Reading variables
       inpRead();                                                                // DUMMY: these variables will be provided externally, or have been stored in case of reboot
   //. Input dependent parameters
-      tmr.timerBaseMax_ms = tmrBaseInt * tmrSleepInterval;                             // Take action every x milliseconds (base counter time step)
+      tmr.timerBaseMax_ms = tmr.countMax[sensBase] * tmr.sleep_ms;              // Take action every x milliseconds (base counter time step)
   //  Last things to do
   //. Confirm proper initialisation      
       BlinkInitiateSuccess();                                                   // Three distincitve blinks to mark start (other native, always shorter blinks will have occured before)
@@ -111,7 +111,7 @@ void loop() {
             Serial.println("Unknown command");                                  // No command or command not recognised 
             break;
         }
-        if (tgb.do) {
+        if (tgb.go) {
           tmrCheckTime();                                                       // Correct timer (only necessary when there were delays, command actions).
         }
       }
