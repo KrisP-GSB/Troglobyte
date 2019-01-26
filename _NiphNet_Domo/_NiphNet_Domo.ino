@@ -65,14 +65,20 @@ void setup() {
       tmr.timerBaseMax_ms = tmr.countMax[sensBase] * tmr.sleep_ms;              // Take action every x milliseconds (base counter time step)
   //  Last things to do
   //. Confirm proper initialisation      
-      BlinkInitiateSuccess();                                                   // Three distincitve blinks to mark start (other native, always shorter blinks will have occured before)
+//      BlinkInitiateSuccess();                                                   // Three distincitve blinks to mark start (other native, always shorter blinks will have occured before)
   //. Reset parameters to start cycle with measurement
-      if (tmrBlinkInt > 0)  {tmrBlinkAction = 1;}                               // First action: measure everything 
+      for (int s = 16; s > sensBase;  s--) {
+        tmr.action & tmr.countMax[s];
+        tmr.action <<= 1;
+      }
+/*
+      if (tmr.countMax[sensLed] > 0)  {tmr.action = 0b10;}            // First action: measure everything 
       if (tmrTInt     > 0)  {tmrTAction     = 1;}                               // Therefore all ...Actions to 1
       if (tmrRHInt    > 0)  {tmrRHAction    = 1;}      
       if (tmrPInt     > 0)  {tmrPAction     = 1;}             
       if (tmrXInt     > 0)  {tmrXAction     = 1;}
-      tmrMillis0 = millis();                                                    // Reset the timer
+*/
+      tmr.timer0_ms = millis();                                                    // Reset the timer
 }
 
 //..|....|....|....|....|....|....|....|....|....|....|....|....|....|....|....|

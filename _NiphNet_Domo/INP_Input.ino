@@ -2,7 +2,7 @@
   void inpRead(){
     //. Timers and related counters    
       tmr.countMax[sensBase]  = 5;                                              // Take action every y counts
-      tmr.countMax{sensBlink] = 0;                                              // Take action every z base counts (i.e. multiples of base counts), 
+      tmr.countMax{sensLed] = 0;                                              // Take action every z base counts (i.e. multiples of base counts), 
       tmr.countMax[sens01_T]  = 1;                                              // use 0 to disable (all are disabled by default).
       tmr.countMax[sens02_RH] = 12;    
       tmr.countMax[sens03_P]  = 12*60;  

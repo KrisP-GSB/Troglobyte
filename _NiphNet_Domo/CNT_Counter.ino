@@ -14,11 +14,11 @@
 
 //. Increment blink counter                               // Serves as template for all other counters
   void cntBlink(){
-    if (tmrBlinkInt > 0) {                               // 0 means: no such event, so do not execute
-      tmrBlinkCnt++;
-      if (tmrBlinkCnt >= tmrBlinkInt) {
-        tmrBlinkCnt = 0;
-        tmrBlinkAction = 1;
+    if (tmr.countMax[sensLed] > 0) {                               // 0 means: no such event, so do not execute
+      tmr.count[sensLed]++;
+      if (tmr.count[sensLed] >= tmr.countMax[sensLed]) {
+        tmr.count[sensLed] = 0;
+        tmr.action[sensLed] = 1;
       }
     }
   }
