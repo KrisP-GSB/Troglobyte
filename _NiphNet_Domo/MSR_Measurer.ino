@@ -2,29 +2,24 @@
 //  Measurer
 //. Blink (Measurement indicator)
   void msrBlink() {
-    if (setBlink>1) {BlinkShort();}
+    if (set.debug) {Serial.println ("B_");}                                      // Debug and code testing (results in Serial monitor)
+    if (set.blinkLeds>1) {BlinkShort();}
   }
 
 //. Measure temperature
   void msrT() {
-    if (setBlink>1) {BlinkT();}
+    if (set.debug) {Serial.print ("T_");}                                       // Debug and code testing (results in Serial monitor)
     // ...
   }
 
 //. Measure relative humidity
   void msrRH() {
-    if (setBlink>1) {BlinkRH();}
+    if (set.debug) {Serial.print ("RH_");}                                      // Debug and code testing (results in Serial monitor)
     // ...
   }
 
 //. Measure pressure
   void msrP() {
-    if (setBlink>1) {BlinkP();}
-    // ...
-  }
-
-//. Measure X (placeholder for additional sensor)
-  void msrX() {
-    if (setBlink>1) {BlinkX();}
+    if (set.debug) {Serial.print ("P_");}                                       // Debug and code testing (results in Serial monitor)
     // ...
   }
