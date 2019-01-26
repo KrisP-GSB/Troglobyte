@@ -15,17 +15,17 @@
 
       struct {
         int action = 0;                                                         // 0b0000000000000000 (so 16 flags).
-        int actionOnCount[15];                                                  // User defined: 0: sensor not used, value: number of counts.
-        int count[16] = {0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0};                      // count[0] -> base counter, others multiples of base counter. Range base counter: 1 s to ~18 days.
-        const int Sleep_ms = 1000;                                              // Equal to the sleep duration (1s or 1000ms for most clocks)
-        unsigned int timer = 0;          
-        unsigned long timer0;
+        int countMax[15];                                                       // User defined: 0: sensor not used, value: number of counts to take action.
+        int counts[16] = {0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0};                      // count[0] -> base counter, others multiples of base counter. Range base counter: 1 s to ~18 days.
+        const int sleep_ms = 1000;                                              // Equal to the sleep duration (1s or 1000ms for most clocks)
+        unsigned int timer_ms = 0;          
+        unsigned long timer0_ms;
       } tmr;
 
-      enum typSensor{ tgb00_Base,tgb01_Led, tgb02_T,  tgb03_RH, 
-                      tgb04_P,   tgb05_X,   tgb06_X,  tgb07_X, 
-                      tgb08_X,   tgb09_X,   tgb10_X,  tgb11_X, 
-                      tgb12_X,   tgb13_X,   tgb14_X,  tgb15_X   };               // C++ command, for explicitly naming the sensors
+      enum typSensor{ sensBase,   sensLed,    sens01_T,  sens02_RH, 
+                      sens03_P,   sens04_X,   sens05_X,  sens06_X, 
+                      sens07_X,   sens08_X,   sens09_X,  sens10_X, 
+                      sens11_X,   sens12_X,   sens13_X,  sens14_X   };               // C++ command, for explicitly naming the sensors
       struct {
         typSensor sensor;      
         const String tgbWhoAmI = "NiphDomo.000.000.T_RH_P._.";    // Type.Version.Serial.SensorInternal.SensorsExternal    // Consider using PROGMEM: https://www.arduino.cc/reference/en/language/variables/utilities/progmem/
