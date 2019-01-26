@@ -33,7 +33,7 @@
   void BlinkShort(){
       digitalWrite(pin.led00, LOW);
       digitalWrite(pin.led00, HIGH);
-      delay(50);
+      delay(10);
       digitalWrite(pin.led00, LOW);
   }
 //. Morse confirmations                                                         // See: https://en.wikipedia.org/wiki/Morse_code

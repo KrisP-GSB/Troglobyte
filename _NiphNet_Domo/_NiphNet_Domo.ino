@@ -28,7 +28,7 @@
         int           counts[sensLed + 1] = {};                                 //    .count[] - count[0] -> base counter, others multiples of base counter. Range base counter: 1 s to ~18 days. {} initiates all values to 0, see: https://stackoverflow.com/questions/201101/how-to-initialize-all-members-of-an-array-to-the-same-value.
         const int     sleep_ms = 1000;                                          //    .sleep_ms - Equal to the sleep duration (1 s or 1000 ms for most clocks)
         unsigned long timer0_ms;                                                //    .timer0_ms - timer starting point (in ms)
-        long          timerBaseMax_ms;                                          //    .timerBaseMax_ms - timer limit (in ms) for base counters (only base needs a timer, others can use counters)
+//        long          timerBaseMax_ms;                                          //    .timerBaseMax_ms - timer limit (in ms) for base counters (only base needs a timer, others can use counters)
       } tmr;
 
   //  Identification and information
@@ -60,12 +60,11 @@ void setup() {
   //. Reading variables
       inpRead();                                                                // DUMMY: these variables will be provided externally, or have been stored in case of reboot
   //. Input dependent parameters
-      tmr.timerBaseMax_ms = tmr.countMax[sensBase] * tmr.sleep_ms;              // Take action every x milliseconds (base counter time step)
+//      tmr.timerBaseMax_ms = tmr.countMax[sensBase] * tmr.sleep_ms;              // Take action every x milliseconds (base counter time step)
   //. Set Action to true
       for (int s = sensLed; s > sensBase;  s--) {                               // Flagging all sensors for action before entering loop
         tmr.action |= (tmr.countMax[s] > 0) << s;                               // Explanation, see: https://github.com/KrisP-GSB/Troglobyte/wiki/Initiate-sensor-actions
       }
-      if (set.debug) {Serial.print (tmr.action, BIN);}                          // Debug and code testing (results in Serial monitor)
   //  Last things to do
   //. Confirm proper initialisation      
       BlinkInitiateSuccess();                                                   // Three distincitve blinks to mark start (other native, always shorter blinks will have occured before)
@@ -75,7 +74,7 @@ void setup() {
 //..|....|....|....|....|....|....|....|....|....|....|....|....|....|....|....|
 void loop() { 
   //  Receiving commands  
-if (set.debug) {Serial.print (tmr.action, BIN);}                          // Debug and code testing (results in Serial monitor)
+//if (set.debug) {Serial.println (tmr.action, BIN);}                          // Debug and code testing (results in Serial monitor)
       com.USB = comUSBconnected(com.USB);                                       // Works as far as tested (i.e. it always detects the USB serial connection)
       com.WAN = comWANconnected();                                              // DUMMY (always false)
       if (com.USB || com.WAN) {
@@ -91,7 +90,7 @@ if (set.debug) {Serial.print (tmr.action, BIN);}                          // Deb
           case '>': // cmdPlay(); break;                                        // Dump all data to serial
           default: Serial.println("Unknown command"); break;                    // No command or command not recognised 
         }
-        if (tgb.go) {tmrCheckTime();}                                           // Correct timer (only necessary when there were delays, command actions).
+        if (tgb.go) {tmrCheckTime(); tgb.go = false;}                            // Correct timer (only necessary when there were delays, command actions). Also reset the generic variable to default.
       }
 
   //  Executing measurements
@@ -103,8 +102,9 @@ if (set.debug) {Serial.print (tmr.action, BIN);}                          // Deb
 
   //  Sleep or delay                                                            // Depending on whether connected
   if  (com.USB || com.WAN) {
-    tmpSleep();                                                                 // Sleep until next second has passed, and increase counters.
+    delay(100);                                                                 // Stay responsive. Delay of 100 ms is acceptable for most input.
+    tmrCheckTime();
   } else {
-    delay(100);                                                                 // Delay of 100 ms is acceptable for most input.
+    tmpSleep();                                                                 // Sleep until next second has passed, and increase counters.
   }
 }
