@@ -33,7 +33,6 @@
 
   //  Identification and information
       struct {
-        //typSensor     sensor;      
         const String  tgbWhoAmI = "NiphDomo.000.000.T_RH_P._.";                 // Type.Version.Serial.SensorInternal.SensorsExternal    // Consider using PROGMEM: https://www.arduino.cc/reference/en/language/variables/utilities/progmem/
         String        tgbStartTGB = "dd-mmm-yyyy hh:mm UCT";                    // Dummy: ask the clock
         String        tgbLocation = "";                                         // Where is the Niph located (needs to be command controlled, e.g. when replacing one Niph with another)
@@ -53,9 +52,9 @@
 void setup() {
   //  Initialise
   //. Hardware
-      pinMode(pin.led00, OUTPUT);                                               // Pins are input buy default
+      pinMode(pin.led00, OUTPUT);                                               // Pins are input by default
   //. Communication
-      Serial.begin(9600);                                                       // Default for most Arduinos
+      Serial.begin(9600);                                                       // 9600 is default communication speed for most Arduinos
   //  Input
   //. Reading variables
       inpRead();                                                                // DUMMY: these variables will be provided externally, or have been stored in case of reboot
@@ -65,8 +64,8 @@ void setup() {
   //. Confirm proper initialisation      
       BlinkInitiateSuccess();                                                   // Three distincitve blinks to mark start (other native, always shorter blinks will have occured before)
   //. Start cycle with measurement
-      for (int s = 16; s > sensBase;  s--) {                                    // Wiki is needed to document what this loop does
-        tmr.action & tmr.countMax[s];
+      for (int s = 16; s > sensBase;  s--) {                                    // Flagging all sensors for action before entering loop
+        tmr.action & tmr.countMax[s];                                           // Wiki is needed to document what this loop does
         tmr.action <<= 1;
       }
       tmr.timer0_ms = millis();                                                 // Reset the timer
@@ -80,37 +79,17 @@ void loop() {
       if (com.USB || com.WAN) {
         switch(comGet()) {                                                      // Reacting to commands. Note that even cmdGet is an int, and so is a character between single quotes ('')! (Only double quotes indicate a char/string.)
           tgb.go = true;                                                        // Did the command result in a delay? True for most commands
-          case 0: 
-            tgb.go = false;                                                     // No delay (maybe the only exception, but it happens a lot)
-            break;                                                              // Nothing received, proceed
-          case '?': 
-            cmdImHere();
-            break;                                                              
-          case 'R':                                                             // Open command prompt to receive commands (pauzes all activities)
-            cmdRun();                         
-            break; 
-          case 'P':                                                             // Suspend all actions untill P is pressed again
-            cmdPauze();
-            break; 
-          case 'S':
-            // cmdStopMeasuring();                                              // Be careful with this, needs certainty to be turned on again
-            break; 
-          case 'T': 
-            // LiveMeasureT()
-            break; 
-          case 'M': 
-            // LiveMeasureAll()
-            break; 
-          case '>':                                                             // Dump all data to serial
-            // cmdPlay();
-            break; 
-          default:
-            Serial.println("Unknown command");                                  // No command or command not recognised 
-            break;
+          case 0: tgb.go = false; break;                                        // Most common 'action': Nohting received, no delay 
+          case '?': cmdImHere(); break;                                                              
+          case 'R': cmdRun(); break;                                            // Open command prompt to receive commands (pauzes all activities)
+          case 'P': cmdPauze(); break;                                          // Suspend all actions untill P is pressed again
+          case 'S': // cmdStopMeasuring(); break;                               // Be careful with this, needs certainty to be turned on again
+          case 'T': // LiveMeasureT(); break; 
+          case 'M': // LiveMeasureAll(); break; 
+          case '>': // cmdPlay(); break;                                        // Dump all data to serial
+          default: Serial.println("Unknown command"); break;                    // No command or command not recognised 
         }
-        if (tgb.go) {
-          tmrCheckTime();                                                       // Correct timer (only necessary when there were delays, command actions).
-        }
+        if (tgb.go) {tmrCheckTime();}                                           // Correct timer (only necessary when there were delays, command actions).
       }
 
   //  Executing measurements
@@ -120,7 +99,7 @@ void loop() {
       //...                                                                     // Room for other sensors (up to sens14_X)
       if (tmrAction(sensLed)) {msrBlink();}                                     // Place last: a blink not followed by a pauze
 
-  //  Sleep or short delay (depending on whether connected)
+  //  Sleep or delay                                                            // Depending on whether connected
   if  (com.USB || com.WAN) {
     tmpSleep();                                                                 // Sleep until next second has passed, and increase counters.
   } else {
