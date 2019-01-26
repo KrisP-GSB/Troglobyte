@@ -1,34 +1,42 @@
 //..|....|....|....|....|....|....|....|....|....|....|....|....|....|....|....|
 //  Initialise
   //  Pin assignments
-      const int ledPin00 = LED_BUILTIN;                                         // LED_BUILTIN points to the internal led, D13 on the Nano (see https://www.arduino.cc/en/Tutorial/Blink)
+      struct {
+        const int pin00 = LED_BUILTIN;                                          // led.pin00 - LED_BUILTIN points to the internal led, D13 on the Nano (see https://www.arduino.cc/en/Tutorial/Blink)
+        const int pin01 = 0;                                                    //    .pin01 - Open slots for three external leds
+        const int pin02 = 0;                                                    //    .pin02
+        const int pin03 = 0;                                                    //    .pin03
+      } led;
   //  Variables
   //. Identification and information
   //. Connection
       boolean tgbUSB = false;                                                   // USB serial connection detected
       boolean tgbWAN = false;                                                   // LoRa connection active
   //. Counter
-      long tmrBaseIntMS;
+//      long tmrBaseIntMS;
 
       // Good tutorial on using bits: https://playground.arduino.cc/Code/BitMath#bit_pack
 
       struct {
         int action = 0;                                                         // 0b0000000000000000 (so 16 flags).
-        int countMax[15];                                                       // User defined: 0: sensor not used, value: number of counts to take action.
-        int counts[16] = {0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0};                      // count[0] -> base counter, others multiples of base counter. Range base counter: 1 s to ~18 days.
+        int countMax[16];                                                       // User defined: 0: sensor not used, value: number of counts to take action.
+        int counts[16] = {0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0};                     // count[0] -> base counter, others multiples of base counter. Range base counter: 1 s to ~18 days.
         const int sleep_ms = 1000;                                              // Equal to the sleep duration (1s or 1000ms for most clocks)
         unsigned int timer_ms = 0;          
         unsigned long timer0_ms;
+        long timerBaseMax_ms; 
       } tmr;
 
       enum typSensor{ sensBase,   sensLed,    sens01_T,  sens02_RH, 
                       sens03_P,   sens04_X,   sens05_X,  sens06_X, 
                       sens07_X,   sens08_X,   sens09_X,  sens10_X, 
-                      sens11_X,   sens12_X,   sens13_X,  sens14_X   };               // C++ command, for explicitly naming the sensors
+                      sens11_X,   sens12_X,   sens13_X,  sens14_X   
+                    };                                                          // C++ command, for explicitly naming the sensors
       struct {
         typSensor sensor;      
         const String tgbWhoAmI = "NiphDomo.000.000.T_RH_P._.";    // Type.Version.Serial.SensorInternal.SensorsExternal    // Consider using PROGMEM: https://www.arduino.cc/reference/en/language/variables/utilities/progmem/
-        String tgbStartTGB = "dd-mmm-yyyy hh:mm UCT";       //Dummy: ask the clock
+        String tgbStartTGB = "dd-mmm-yyyy hh:mm UCT";       // Dummy: ask the clock
+        String tgbLocation = ""; // Where is the Niph located (needs to be command controlled, e.g. when replacing one Niph with another)
       } tgb;
       
   //. Input
@@ -43,7 +51,7 @@
 void setup() {
   //  Initialise
   //. Hardware
-      pinMode(ledPin00, OUTPUT);                                                // Pins are input buy default
+      pinMode(led.pin00, OUTPUT);                                                // Pins are input buy default
   //. Communication
       Serial.begin(9600);                                                       // Default for most Arduinos
   //  Input
