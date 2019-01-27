@@ -46,7 +46,7 @@ void loop() {
 
   //  Sleep or delay                                                            // Depending on whether connected
   if (com.USB || com.WAN) {
-    tmrDelay(100);                                                              // Stay responsive. Delay of 100 ms is acceptable for most input.    
+    tmrDelay(100);                                                              // Stay responsive. Delay of max 100 ms is acceptable for most input.    
   } else {
     tmpSleep();                                                                 // Sleep until next second has passed, and increase counters.
   }
