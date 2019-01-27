@@ -18,3 +18,13 @@
     }
     return false;                                                               // Required line, will otherwise exit with 'true' (for success)
   }
+
+//. Delay code execution                                                        // Do this to save power
+  void tmrDelay(byte t) {                                                       // Delay e.g. 100 ms, or less if close to timer limit
+    if ((millis() + t - tmr.timer0_ms) >= tmr.sleep_ms) {
+      t = tmr.sleep_ms - (millis() - tmr.timer0_ms);                            // I am not 100% certain whether this always works correctly (because of unsigned character, running over of variables...)
+      if (t != 99) {t++;}                                                       // Make sure it runs accross the timer limit, but avoid setting t to 100 (see further)
+    }
+    delay(t);
+    if (t != 100) {tmrCheckTime();}                                             // Time limit has passed, tmrCheckTime will take care of counters (but only when necessary)
+  }
