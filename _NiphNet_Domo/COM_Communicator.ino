@@ -18,7 +18,7 @@
           delay(50);                                                            //    For debouncing during connecting
           if(Serial) {
             set.blinkLeds++;                                                    //    Increase by one, so set.blinkLeds == 1 will pass. Next line is an example.
-            if (set.blinkLeds>1) {BlinkConnected();}
+            if (set.blinkLeds>1) {ledConnected();}
             return(true);                                                       //    If still connected, will return true
           } else {
             return(false);
@@ -30,7 +30,7 @@
         if (Serial) { 
           return(true);                                                         //  Confirm connection (no debouncing needed)
         } else {
-          if (set.blinkLeds>1) {BlinkDisconnected();}
+          if (set.blinkLeds>1) {ledDisconnected();}
           set.blinkLeds--;
           return(false);                                                        //  Connection broken
         }

@@ -1,6 +1,6 @@
 //..|....|....|....|....|....|....|....|....|....|....|....|....|....|....|....|
 //  Near term
-//    .rename the blink functions
+//    . ...
 //
 //  Milestones
 //    .Clock integrated

@@ -8,17 +8,17 @@
     Serial.println(inf.tgbWhoAmI);
     Serial.print("Operational since: ");
     Serial.println(inf.tgbStartTGB);
-    BlinkImHere();
+    ledImHere();
   }
 //..Pauze
   void cmdPauze(){
     if (set.debug) {Serial.println ('P');}                                      // Debug and code testing (results in Serial monitor)
-    if (set.blinkLeds>1) {BlinkPauzeStart();}                                   // Lights on
+    if (set.blinkLeds>1) {ledPauzeStart();}                                     // Lights on
     while (comGet() != 'P') {                                                   // Trap in this loop until P is pressed again
       delay(50);                          
     }
     if (set.debug) {Serial.println ('P');}                                      // Debug and code testing (results in Serial monitor)
-    BlinkPauzeEnd();                                                            // Lights off
+    ledPauzeEnd();                                                              // Lights off
   }
 //..Run (command prompt)
   void cmdRun(){                                                                // Dummy code

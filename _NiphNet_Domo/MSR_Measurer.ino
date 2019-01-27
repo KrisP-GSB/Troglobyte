@@ -2,8 +2,8 @@
 //  Measurer
 //. Blink (Measurement indicator)
   void msrBlink() {
-    if (set.debug) {Serial.println ("B_");}                                      // Debug and code testing (results in Serial monitor)
-    if (set.blinkLeds>1) {BlinkShort();}
+    if (set.debug) {Serial.println ("B_");}                                     // Debug and code testing (results in Serial monitor)
+    if (set.blinkLeds>1) {ledShort();}
   }
 
 //. Measure temperature

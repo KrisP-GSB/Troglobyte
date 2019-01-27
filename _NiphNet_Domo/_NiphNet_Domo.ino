@@ -16,7 +16,7 @@ void setup() {
       }
   //  Last things to do
   //. Confirm proper initialisation      
-      BlinkInitiateSuccess();                                                   // Three distincitve blinks to mark start (other native, always shorter blinks will have occured before)
+      ledInitialised();                                                     // Three distincitve blinks to mark start (other native, always shorter blinks will have occured before)
       tmr.timer0_ms = millis();                                                 // Reset the timer
 }
 //..|....|....|....|....|....|....|....|....|....|....|....|....|....|....|....|

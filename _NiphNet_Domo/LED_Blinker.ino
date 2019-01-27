@@ -2,17 +2,17 @@
 //  LED communication
 //. Connections
 //..Connection established
-  void BlinkConnected() {
-    BlinkFadeIn();
+  void ledConnected() {
+    ledFadeIn();
     delay(500);
   }
 //..Connection lost
-  void BlinkDisconnected() {
-    BlinkFadeOut();
+  void ledDisconnected() {
+    ledFadeOut();
   }
   
 //. Initialisation
-    void BlinkInitiateSuccess(){
+    void ledInitialised(){
       digitalWrite(pin.led00, LOW);
       delay(1000);
       for (int i=0; i<=5; i++){
@@ -22,52 +22,52 @@
       delay(1500);                                                              // Adding 1.5 s to have 2 s pauze before starting real code
     }
 //. Fade out and in (the 'I'm present and alive' blink)
-  void BlinkImHere(){
-    BlinkFadeIn();
-    BlinkFadeOut();
+  void ledImHere(){
+    ledFadeIn();
+    ledFadeOut();
     delay(100);
-    BlinkFadeIn();
-    BlinkFadeOut();
+    ledFadeIn();
+    ledFadeOut();
   }
 //. Short blink
-  void BlinkShort(){
+  void ledShort(){
       digitalWrite(pin.led00, LOW);
       digitalWrite(pin.led00, HIGH);
       delay(10);
       digitalWrite(pin.led00, LOW);
   }
 //. Morse confirmations                                                         // See: https://en.wikipedia.org/wiki/Morse_code
-//..BlinkT      -
-  void BlinkT() {
-    BlinkDash();  // T
-    EndWord();
+//..ledT      -
+  void ledT() {
+    ledDash();  // T
+    ledEndWord();
   }
-//..BlinkRH()   .-. ....
-  void BlinkRH() {
-    BlinkDot(); BlinkDash(); BlinkDot(); EndLetter();                           // R
-    BlinkDot(); BlinkDot(); BlinkDot(); BlinkDot(); EndWord();                  // H
+//..ledRH()   .-. ....
+  void ledRH() {
+    ledDot(); ledDash(); ledDot(); ledEndLetter();                                 // R
+    ledDot(); ledDot(); ledDot(); ledDot(); ledEndWord();                          // H
   }
-//..BlinkP()    .--.
-  void BlinkP() {
-    BlinkDot(); BlinkDash(); BlinkDash(); BlinkDot(); EndWord();                // P
+//..ledP()    .--.
+  void ledP() {
+    ledDot(); ledDash(); ledDash(); ledDot(); ledEndWord();                        // P
   }
-//..BlinkX()    -..-
-  void BlinkX() {
-    BlinkDash(); BlinkDot(); BlinkDot(); BlinkDash(); EndWord();                // X
+//..ledX()    -..-
+  void ledX() {
+    ledDash(); ledDot(); ledDot(); ledDash(); ledEndWord();                        // X
   }
 
 //. Pauze indicater
 //..Start of pauze
-    void BlinkPauzeStart(){
+    void ledPauzeStart(){
       digitalWrite(pin.led00, HIGH);
     }
 //..End of pauze
-    void BlinkPauzeEnd(){
+    void ledPauzeEnd(){
       digitalWrite(pin.led00, LOW);
     }
 
 //. Generic code
-  void BlinkFadeOut(){
+  void ledFadeOut(){
     for (int i=0; i<=10000; i=i+100){                                           // LED fading out during ~1s (in 11 steps)
       digitalWrite(pin.led00, LOW);
       delayMicroseconds(i);
@@ -76,7 +76,7 @@
     }      
     digitalWrite(pin.led00, LOW);
   }
-  void BlinkFadeIn(){
+  void ledFadeIn(){
     for (int i=0; i<=10000; i=i+100){                                           // LED fading out during ~1s (in 11 steps)
       digitalWrite(pin.led00, HIGH);
       delayMicroseconds(i);
@@ -86,21 +86,21 @@
   }
 
 //. Morse code
-  void BlinkDot(){
+  void ledDot(){
     digitalWrite(pin.led00, HIGH);
     delay(200);                                                                 // One unit
     digitalWrite(pin.led00, LOW);
     delay(200);                                                                 // One unit
   }
-  void BlinkDash(){
+  void ledDash(){
     digitalWrite(pin.led00, HIGH);
     delay(600);                                                                 // Three unit
     digitalWrite(pin.led00, LOW);
     delay(200);                                                                 // One unit
   }
-  void EndLetter() {
+  void ledEndLetter() {
   delay(400);                                                                   // Plus two units
   }
-  void EndWord() {
+  void ledEndWord() {
     delay(1200);                                                                // Plus six units
   }
