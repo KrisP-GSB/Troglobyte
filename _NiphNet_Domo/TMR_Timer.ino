@@ -23,8 +23,12 @@
   void tmrDelay(byte t) {                                                       // Delay e.g. 100 ms, or less if close to timer limit
     if ((millis() + t - tmr.timer0_ms) >= tmr.sleep_ms) {
       t = tmr.sleep_ms - (millis() - tmr.timer0_ms);                            // I am not 100% certain whether this always works correctly (because of unsigned character, running over of variables...)
-      if (t != 99) {t++;}                                                       // Make sure it runs accross the timer limit, but avoid setting t to 100 (see further)
+      t += 10;                                                                  // Make sure it runs accross the timer limit (+10, because timer resolution/accuracy is not 1 ms, which could result in tmrCheckTime not reacting). 
+      tgb.go = true;
     }
     delay(t);
-    if (t != 100) {tmrCheckTime();}                                             // Time limit has passed, tmrCheckTime will take care of counters (but only when necessary)
+    if (tgb.go) {
+      tmrCheckTime();                                                           // Time limit must have been crossed passed, tmrCheckTime will take care of counters.
+      tgb.go = false;                                                           // Reset generic parameter.
+    }
   }
