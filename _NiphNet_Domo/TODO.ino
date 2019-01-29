@@ -1,6 +1,6 @@
 //..|....|....|....|....|....|....|....|....|....|....|....|....|....|....|....|
 //  Near term
-//    . ...
+//    . Start measuring at 'given time'
 //
 //  Milestones
 //    .Clock integrated
