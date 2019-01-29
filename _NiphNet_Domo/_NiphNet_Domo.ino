@@ -18,6 +18,20 @@ void setup() {
 }
 //..|....|....|....|....|....|....|....|....|....|....|....|....|....|....|....|
 void loop() { 
+  //  Automatic measurements
+  if (tmrAction(sens01_T )) {msrT();      tmrCheckTime();}                      // Record sensor 01: T
+  if (tmrAction(sens02_RH)) {msrRH();     tmrCheckTime();}                      // Record sensor 02: RH
+  if (tmrAction(sens03_P )) {msrP();      tmrCheckTime();}                      // Record sensor 03: P
+  //...                                                                         // Placeholder for other sensors (up to sensor 14)
+  if (tmrAction(sensLed  )) {msrBlink();  tmrCheckTime();}                      // Place last: a blink not followed by a pauze
+
+  //  Sleep or delay                                                            // Depending on whether connected
+  if (com.USB || com.WAN) {
+    tmrDelay(100);                                                              // Stay responsive. Delay of max 100 ms is acceptable for most input.    
+  } else {
+    tmpSleep();                                                                 // Sleep until next second has passed, and increase counters.
+  }
+
   //  User commands  
   com.USB = comUSBconnected(com.USB);                                           // Works as far as tested (i.e. it always detects the USB serial connection)
   com.WAN = comWANconnected();                                                  // DUMMY (always false)
@@ -35,20 +49,6 @@ void loop() {
       default: Serial.println("Unknown command"); break;                        // No command or command not recognised 
     }
     if (tgb.go) {tmrCheckTime(); tgb.go = false;}                               // Correct timer (only necessary when there were delays, command actions). Also reset the generic variable to default.
-  }
-
-  //  Automatic measurements
-  if (tmrAction(sens01_T )) {msrT();      tmrCheckTime();}                      // Record sensor 01: T
-  if (tmrAction(sens02_RH)) {msrRH();     tmrCheckTime();}                      // Record sensor 02: RH
-  if (tmrAction(sens03_P )) {msrP();      tmrCheckTime();}                      // Record sensor 03: P
-  //...                                                                         // Placeholder for other sensors (up to sensor 14)
-  if (tmrAction(sensLed  )) {msrBlink();  tmrCheckTime();}                      // Place last: a blink not followed by a pauze
-
-  //  Sleep or delay                                                            // Depending on whether connected
-  if (com.USB || com.WAN) {
-    tmrDelay(100);                                                              // Stay responsive. Delay of max 100 ms is acceptable for most input.    
-  } else {
-    tmpSleep();                                                                 // Sleep until next second has passed, and increase counters.
   }
 }
 //..|....|....|....|....|....|....|....|....|....|....|....|....|....|....|....|
