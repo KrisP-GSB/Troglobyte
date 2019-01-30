@@ -1,4 +1,4 @@
-# Toglobyte
+# Troglobyte
 # Repository created on 24/11/2018
 
 Maintained by Kris Piessens (@KrisP-GSB)
